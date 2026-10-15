@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    Recipe items screen.
+
+    This screen allows staff to link finished products to the inventory items
+    required to make them. These recipe links are used by the booking process
+    to calculate stock requirements and deduct inventory automatically.
+-->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.bookingapp.ui.RecipeItemController"
+            fitToWidth="true"
+            fitToHeight="true"
+            pannable="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            style="-fx-background: #f8f4f6;
+                   -fx-background-color: #f8f4f6;
+                   -fx-control-inner-background: #f8f4f6;">
+
+    <content>
+        <!-- Main page layout. -->
+        <VBox spacing="24"
+              alignment="TOP_CENTER"
+              prefWidth="1600"
+              minHeight="1000"
+              style="-fx-background-color:
+                     linear-gradient(to bottom, #f8f4f6, #f3ece7);">
+
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+
+            <!-- Header card containing shortcut help, centred page title and navigation button. -->
+            <HBox alignment="CENTER"
+                  spacing="24"
+                  maxWidth="1450"
+                  prefWidth="1450"
+                  minHeight="130"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 18;
+                         -fx-border-radius: 18;
+                         -fx-border-color: #eadfe2;
+                         -fx-padding: 22 24 22 24;">
+
+                <!-- Left spacer used to balance the Keyboard Shortcuts and Back buttons on the right. -->
+                <Region prefWidth="430"
+                        minWidth="430"/>
+
+                <!-- Page title and short description. -->
+                <VBox alignment="CENTER"
+                      spacing="6"
+                      HBox.hgrow="ALWAYS">
+
+                    <Label text="Recipe Items"
+                           maxWidth="Infinity"
+                           alignment="CENTER"
+                           style="-fx-font-size: 30px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #2f2a2c;"/>
+
+                    <Label text="Link products to the inventory items they use."
+                           wrapText="true"
+                           maxWidth="Infinity"
+                           alignment="CENTER"
+                           style="-fx-font-size: 16px;
+                                  -fx-text-fill: #1f1f1f;"/>
+                </VBox>
+
+                <!-- Right-side button area balances the spacer on the left. -->
+                <HBox alignment="CENTER_RIGHT"
+                      spacing="12"
+                      prefWidth="430"
+                      minWidth="430">
+
+                    <!-- Opens keyboard shortcut guidance for users who cannot easily use a mouse. -->
+                    <Button text="_Keyboard Shortcuts (Alt+K)"
+                            mnemonicParsing="true"
+                            onAction="#showKeyboardShortcuts"
+                            prefWidth="220"
+                            prefHeight="46"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #eee7e3;
+                                   -fx-text-fill: #1f1f1f;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+
+                    <!-- Returns the user to the main dashboard screen. -->
+                    <Button text="_Back to Dashboard"
+                            mnemonicParsing="true"
+                            onAction="#goBack"
+                            prefWidth="190"
+                            prefHeight="46"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #6f8190;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+                </HBox>
+            </HBox>
+
+            <!-- Main content area containing the recipe form and recipe table. -->
+            <HBox spacing="24"
+                  alignment="TOP_CENTER"
+                  maxWidth="1450"
+                  prefWidth="1450">
+
+                <!-- Form card used to link a product to an inventory item. -->
+                <VBox spacing="14"
+                      prefWidth="360"
+                      minWidth="360"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-padding: 22;
+                             -fx-border-color: #eadfe2;
+                             -fx-border-radius: 18;">
+
+                    <Label text="Link Product to Inventory"
+                           wrapText="true"
+                           style="-fx-font-size: 22px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #b88fa1;"/>
+
+                    <!-- Product selected for the recipe item. -->
+                    <ComboBox fx:id="productComboBox"
+                              promptText="Select product"
+                              prefWidth="320"
+                              prefHeight="42"
+                              focusTraversable="true"
+                              style="-fx-prompt-text-fill: #1f1f1f;
+                                     -fx-text-fill: #1f1f1f;
+                                     -fx-font-size: 14px;"/>
+
+                    <!-- Inventory item consumed by the selected product. -->
+                    <ComboBox fx:id="inventoryItemComboBox"
+                              promptText="Select inventory item"
+                              prefWidth="320"
+                              prefHeight="42"
+                              focusTraversable="true"
+                              style="-fx-prompt-text-fill: #1f1f1f;
+                                     -fx-text-fill: #1f1f1f;
+                                     -fx-font-size: 14px;"/>
+
+                    <!-- Quantity of the inventory item required for one product unit. -->
+                    <TextField fx:id="quantityRequiredField"
+                               promptText="Quantity required per unit"
+                               prefWidth="320"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Adds the product and inventory item relationship to the recipe list. -->
+                    <Button text="_Add Recipe Item"
+                            mnemonicParsing="true"
+                            onAction="#addRecipeItem"
+                            prefWidth="320"
+                            prefHeight="42"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #b88fa1;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+                </VBox>
+
+                <!-- Recipe list card. -->
+                <VBox spacing="16"
+                      HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-padding: 22;
+                             -fx-border-color: #eadfe2;
+                             -fx-border-radius: 18;">
+
+                    <Label text="Recipe List"
+                           style="-fx-font-size: 24px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #50a26b;"/>
+
+                    <!-- Search area used to filter the recipe table. -->
+                    <HBox alignment="CENTER_LEFT"
+                          spacing="12"
+                          style="-fx-background-color: #f8f4f6;
+                                 -fx-background-radius: 12;
+                                 -fx-border-color: #eadfe2;
+                                 -fx-border-radius: 12;
+                                 -fx-padding: 14;">
+
+                        <Label text="Search:"
+                               style="-fx-font-size: 14px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Search box controlled by RecipeItemController. -->
+                        <TextField fx:id="searchField"
+                                   promptText="Search by product, inventory item, quantity or ID..."
+                                   prefWidth="560"
+                                   focusTraversable="true"
+                                   style="-fx-prompt-text-fill: #1f1f1f;
+                                          -fx-text-fill: #1f1f1f;
+                                          -fx-font-size: 14px;"/>
+                    </HBox>
+
+                    <!-- Table showing product-to-inventory recipe links. -->
+                    <TableView fx:id="recipeTable"
+                               prefHeight="520"
+                               VBox.vgrow="ALWAYS"
+                               focusTraversable="true"
+                               style="-fx-background-radius: 12;
+                                      -fx-border-radius: 12;
+                                      -fx-border-color: #eadfe2;">
+
+                        <columns>
+                            <!-- Internal recipe item ID. -->
+                            <TableColumn fx:id="idColumn"
+                                         text="ID"
+                                         prefWidth="70"/>
+
+                            <!-- Finished product name. -->
+                            <TableColumn fx:id="productColumn"
+                                         text="Product"
+                                         prefWidth="220"/>
+
+                            <!-- Inventory item used by the product. -->
+                            <TableColumn fx:id="inventoryColumn"
+                                         text="Inventory Item"
+                                         prefWidth="260"/>
+
+                            <!-- Quantity required for each unit of the product. -->
+                            <TableColumn fx:id="quantityColumn"
+                                         text="Qty Required Per Unit"
+                                         prefWidth="240"/>
+                        </columns>
+                    </TableView>
+
+                    <!-- Recipe table action buttons. -->
+                    <HBox spacing="12">
+
+                        <!-- Deletes the selected recipe item. -->
+                        <Button text="_Delete Selected"
+                                mnemonicParsing="true"
+                                onAction="#deleteSelectedRecipeItem"
+                                prefWidth="150"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #c35656;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+
+                        <!-- Reloads the recipe item table. -->
+                        <Button text="_Refresh"
+                                mnemonicParsing="true"
+                                onAction="#loadRecipeItems"
+                                prefWidth="110"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #50a26b;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <!-- Returns the user to the main dashboard screen. This button does not use
+                             Alt+B because the header Back button already owns that shortcut. -->
+                        <Button text="Back to Dashboard"
+                                mnemonicParsing="false"
+                                onAction="#goBack"
+                                prefWidth="180"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #6f8190;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

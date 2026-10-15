@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    Inventory batches screen.
+
+    This screen allows staff to add, update, delete and search stock batches.
+    Inventory batches are used to record supplier costs, purchase dates, expiry
+    dates and remaining quantities so FIFO stock usage can be managed accurately.
+-->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.bookingapp.ui.InventoryBatchController"
+            fitToWidth="true"
+            pannable="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            style="-fx-background: #f8f4f6;
+                   -fx-background-color: #f8f4f6;
+                   -fx-control-inner-background: #f8f4f6;">
+
+       <content>
+              <!-- Main page layout. -->
+              <VBox spacing="22"
+                    minHeight="850"
+                    style="-fx-background-color: linear-gradient(to bottom, #f8f4f6, #f3ece7);">
+
+                     <padding>
+                            <Insets top="25" right="25" bottom="30" left="25"/>
+                     </padding>
+
+                     <!-- Header card containing the page title, shortcut help and navigation button. -->
+                     <HBox alignment="CENTER_LEFT"
+                           spacing="15"
+                           style="-fx-background-color: white;
+                                  -fx-background-radius: 14;
+                                  -fx-border-color: #ddd4cf;
+                                  -fx-border-radius: 14;
+                                  -fx-padding: 20;">
+
+                            <!-- Screen title and short description. -->
+                            <VBox spacing="5">
+                                   <Label text="Inventory Batches"
+                                          style="-fx-font-size: 25px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <Label text="Add stock batches, record supplier costs and manage FIFO inventory."
+                                          wrapText="true"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #1f1f1f;"/>
+                            </VBox>
+
+                            <Region HBox.hgrow="ALWAYS"/>
+
+                            <!-- Opens keyboard shortcut guidance for users who cannot easily use a mouse. -->
+                            <Button text="_Keyboard Shortcuts (Alt+K)"
+                                    mnemonicParsing="true"
+                                    onAction="#showKeyboardShortcuts"
+                                    prefWidth="220"
+                                    prefHeight="40"
+                                    focusTraversable="true"
+                                    style="-fx-font-size: 14px;
+                                           -fx-font-weight: bold;
+                                           -fx-background-color: #eee7e3;
+                                           -fx-text-fill: #1f1f1f;
+                                           -fx-background-radius: 8;
+                                           -fx-cursor: hand;"/>
+
+                            <!-- Returns the user to the main dashboard screen. -->
+                            <Button text="_Back to Dashboard"
+                                    mnemonicParsing="true"
+                                    onAction="#goBack"
+                                    prefWidth="160"
+                                    prefHeight="40"
+                                    focusTraversable="true"
+                                    style="-fx-font-size: 14px;
+                                           -fx-font-weight: bold;
+                                           -fx-background-color: #c76b7d;
+                                           -fx-text-fill: white;
+                                           -fx-background-radius: 8;
+                                           -fx-cursor: hand;"/>
+                     </HBox>
+
+                     <!-- Main content area containing the form and batch table. -->
+                     <HBox spacing="22"
+                           alignment="TOP_LEFT">
+
+                            <!-- Batch detail form card. -->
+                            <VBox spacing="13"
+                                  prefWidth="330"
+                                  minWidth="330"
+                                  style="-fx-background-color: white;
+                                         -fx-background-radius: 14;
+                                         -fx-border-color: #ddd4cf;
+                                         -fx-border-radius: 14;
+                                         -fx-padding: 20;">
+
+                                   <Label text="Batch Details"
+                                          style="-fx-font-size: 19px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <Label text="Select an existing row to edit it."
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <!-- Inventory item linked to the batch. -->
+                                   <Label text="Inventory Item"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <ComboBox fx:id="inventoryItemComboBox"
+                                             promptText="Select inventory item"
+                                             editable="false"
+                                             prefWidth="290"
+                                             prefHeight="38"
+                                             focusTraversable="true"
+                                             style="-fx-prompt-text-fill: #1f1f1f;
+                                                    -fx-text-fill: #1f1f1f;
+                                                    -fx-font-size: 14px;"/>
+
+                                   <!-- Optional supplier linked to the batch. -->
+                                   <Label text="Supplier"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <ComboBox fx:id="supplierComboBox"
+                                             promptText="Select supplier (optional)"
+                                             editable="false"
+                                             prefWidth="290"
+                                             prefHeight="38"
+                                             focusTraversable="true"
+                                             style="-fx-prompt-text-fill: #1f1f1f;
+                                                    -fx-text-fill: #1f1f1f;
+                                                    -fx-font-size: 14px;"/>
+
+                                   <!-- Batch code used to identify the stock batch. -->
+                                   <Label text="Batch Code"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <TextField fx:id="batchCodeField"
+                                              promptText="For example: FLOUR-2026-001"
+                                              prefWidth="290"
+                                              prefHeight="38"
+                                              focusTraversable="true"
+                                              style="-fx-prompt-text-fill: #1f1f1f;
+                                                     -fx-text-fill: #1f1f1f;
+                                                     -fx-font-size: 14px;"/>
+
+                                   <!-- Purchase date for FIFO ordering and stock history. -->
+                                   <Label text="Purchase Date"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <DatePicker fx:id="purchaseDatePicker"
+                                               promptText="Select purchase date"
+                                               prefWidth="290"
+                                               prefHeight="38"
+                                               focusTraversable="true"
+                                               style="-fx-prompt-text-fill: #1f1f1f;
+                                                      -fx-text-fill: #1f1f1f;
+                                                      -fx-font-size: 14px;"/>
+
+                                   <!-- Optional expiry date used for expiry and waste monitoring. -->
+                                   <Label text="Expiry Date"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <DatePicker fx:id="expiryDatePicker"
+                                               promptText="Optional expiry date"
+                                               prefWidth="290"
+                                               prefHeight="38"
+                                               focusTraversable="true"
+                                               style="-fx-prompt-text-fill: #1f1f1f;
+                                                      -fx-text-fill: #1f1f1f;
+                                                      -fx-font-size: 14px;"/>
+
+                                   <!-- Quantity originally received in the batch. -->
+                                   <Label text="Quantity Received"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <TextField fx:id="quantityReceivedField"
+                                              promptText="For example: 25"
+                                              prefWidth="290"
+                                              prefHeight="38"
+                                              focusTraversable="true"
+                                              style="-fx-prompt-text-fill: #1f1f1f;
+                                                     -fx-text-fill: #1f1f1f;
+                                                     -fx-font-size: 14px;"/>
+
+                                   <!-- Current quantity remaining in the batch. -->
+                                   <Label text="Quantity Remaining"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <TextField fx:id="quantityRemainingField"
+                                              promptText="Normally the same as received"
+                                              prefWidth="290"
+                                              prefHeight="38"
+                                              focusTraversable="true"
+                                              style="-fx-prompt-text-fill: #1f1f1f;
+                                                     -fx-text-fill: #1f1f1f;
+                                                     -fx-font-size: 14px;"/>
+
+                                   <!-- Unit cost used to calculate batch and stock values. -->
+                                   <Label text="Unit Cost (£)"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <TextField fx:id="unitCostField"
+                                              promptText="For example: 1.25"
+                                              prefWidth="290"
+                                              prefHeight="38"
+                                              focusTraversable="true"
+                                              style="-fx-prompt-text-fill: #1f1f1f;
+                                                     -fx-text-fill: #1f1f1f;
+                                                     -fx-font-size: 14px;"/>
+
+                                   <!-- Adds a new inventory batch using the form values. -->
+                                   <Button text="_Add Batch"
+                                           mnemonicParsing="true"
+                                           onAction="#addBatch"
+                                           prefWidth="290"
+                                           prefHeight="42"
+                                           focusTraversable="true"
+                                           style="-fx-font-size: 14px;
+                                                  -fx-font-weight: bold;
+                                                  -fx-background-color: #8a5a44;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 9;
+                                                  -fx-cursor: hand;"/>
+
+                                   <!-- Updates the selected batch using the form values. -->
+                                   <Button text="_Update Selected Batch"
+                                           mnemonicParsing="true"
+                                           onAction="#updateBatch"
+                                           prefWidth="290"
+                                           prefHeight="42"
+                                           focusTraversable="true"
+                                           style="-fx-font-size: 14px;
+                                                  -fx-font-weight: bold;
+                                                  -fx-background-color: #b88fa1;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 9;
+                                                  -fx-cursor: hand;"/>
+
+                                   <!-- Clears the batch detail form. -->
+                                   <Button text="_Clear Form"
+                                           mnemonicParsing="true"
+                                           onAction="#clearForm"
+                                           prefWidth="290"
+                                           prefHeight="40"
+                                           focusTraversable="true"
+                                           style="-fx-font-size: 14px;
+                                                  -fx-background-color: #eee7e3;
+                                                  -fx-text-fill: #3f3936;
+                                                  -fx-background-radius: 9;
+                                                  -fx-cursor: hand;"/>
+
+                                   <!-- Deletes the selected inventory batch. -->
+                                   <Button text="_Delete Selected Batch"
+                                           mnemonicParsing="true"
+                                           onAction="#deleteSelectedBatch"
+                                           prefWidth="290"
+                                           prefHeight="40"
+                                           focusTraversable="true"
+                                           style="-fx-font-size: 14px;
+                                                  -fx-font-weight: bold;
+                                                  -fx-background-color: #c76b7d;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 9;
+                                                  -fx-cursor: hand;"/>
+                            </VBox>
+
+                            <!-- Existing inventory batch table card. -->
+                            <VBox spacing="14"
+                                  HBox.hgrow="ALWAYS"
+                                  style="-fx-background-color: white;
+                                         -fx-background-radius: 14;
+                                         -fx-border-color: #ddd4cf;
+                                         -fx-border-radius: 14;
+                                         -fx-padding: 20;">
+
+                                   <!-- Table heading and refresh button. -->
+                                   <HBox alignment="CENTER_LEFT"
+                                         spacing="12">
+                                          <VBox spacing="4">
+                                                 <Label text="Existing Inventory Batches"
+                                                        style="-fx-font-size: 19px;
+                                                               -fx-font-weight: bold;
+                                                               -fx-text-fill: #1f1f1f;"/>
+
+                                                 <Label text="Batches are used from the oldest purchase date first."
+                                                        wrapText="true"
+                                                        style="-fx-font-size: 14px;
+                                                               -fx-text-fill: #1f1f1f;"/>
+                                          </VBox>
+
+                                          <Region HBox.hgrow="ALWAYS"/>
+
+                                          <!-- Reloads the inventory batch table. -->
+                                          <Button text="_Refresh"
+                                                  mnemonicParsing="true"
+                                                  onAction="#loadBatches"
+                                                  prefWidth="110"
+                                                  prefHeight="38"
+                                                  focusTraversable="true"
+                                                  style="-fx-font-size: 14px;
+                                                         -fx-background-color: #8a5a44;
+                                                         -fx-text-fill: white;
+                                                         -fx-background-radius: 8;
+                                                         -fx-cursor: hand;"/>
+                                   </HBox>
+
+                                   <!-- Search area used to filter existing batches. -->
+                                   <HBox alignment="CENTER_LEFT"
+                                         spacing="10"
+                                         style="-fx-background-color: #f8f4f6;
+                                                -fx-background-radius: 10;
+                                                -fx-border-color: #ddd4cf;
+                                                -fx-border-radius: 10;
+                                                -fx-padding: 12;">
+
+                                          <Label text="Search:"
+                                                 style="-fx-font-size: 14px;
+                                                        -fx-font-weight: bold;
+                                                        -fx-text-fill: #1f1f1f;"/>
+
+                                          <!-- Search box controlled by InventoryBatchController. -->
+                                          <TextField fx:id="searchField"
+                                                     promptText="Search by item, supplier, batch code, purchase date, expiry date, cost or no expiry date..."
+                                                     prefWidth="650"
+                                                     focusTraversable="true"
+                                                     style="-fx-prompt-text-fill: #1f1f1f;
+                                                            -fx-text-fill: #1f1f1f;
+                                                            -fx-font-size: 14px;"/>
+                                   </HBox>
+
+                                   <!-- Table showing all recorded inventory batches. -->
+                                   <TableView fx:id="batchTable"
+                                              prefHeight="610"
+                                              VBox.vgrow="ALWAYS"
+                                              focusTraversable="true"
+                                              style="-fx-background-color: white;
+                                                     -fx-border-color: #ddd4cf;
+                                                     -fx-border-radius: 10;
+                                                     -fx-background-radius: 10;">
+
+                                          <columns>
+                                                 <!-- Internal batch ID. -->
+                                                 <TableColumn fx:id="idColumn" text="ID" prefWidth="55"/>
+
+                                                 <!-- Inventory item linked to the batch. -->
+                                                 <TableColumn fx:id="inventoryItemColumn" text="Inventory Item" prefWidth="145"/>
+
+                                                 <!-- Supplier linked to the batch, if available. -->
+                                                 <TableColumn fx:id="supplierColumn" text="Supplier" prefWidth="130"/>
+
+                                                 <!-- Batch code used to identify the stock batch. -->
+                                                 <TableColumn fx:id="batchCodeColumn" text="Batch Code" prefWidth="130"/>
+
+                                                 <!-- Purchase date for the batch. -->
+                                                 <TableColumn fx:id="purchaseDateColumn" text="Purchase Date" prefWidth="105"/>
+
+                                                 <!-- Expiry date for the batch, if recorded. -->
+                                                 <TableColumn fx:id="expiryDateColumn" text="Expiry Date" prefWidth="105"/>
+
+                                                 <!-- Quantity originally received. -->
+                                                 <TableColumn fx:id="quantityReceivedColumn" text="Received" prefWidth="85"/>
+
+                                                 <!-- Current quantity remaining. -->
+                                                 <TableColumn fx:id="quantityRemainingColumn" text="Remaining" prefWidth="90"/>
+
+                                                 <!-- Unit cost recorded for the batch. -->
+                                                 <TableColumn fx:id="unitCostColumn" text="Unit Cost" prefWidth="80"/>
+
+                                                 <!-- Total value of the remaining batch quantity. -->
+                                                 <TableColumn fx:id="batchValueColumn" text="Batch Value" prefWidth="95"/>
+                                          </columns>
+                                   </TableView>
+
+                                   <!-- Summary area showing the total remaining stock value. -->
+                                   <HBox alignment="CENTER_LEFT"
+                                         spacing="10"
+                                         style="-fx-background-color: #f8f4f6;
+                                                -fx-background-radius: 10;
+                                                -fx-padding: 14;">
+
+                                          <Label fx:id="totalStockValueLabel"
+                                                 text="Total remaining stock value: £0.00"
+                                                 style="-fx-font-size: 15px;
+                                                        -fx-font-weight: bold;
+                                                        -fx-text-fill: #8a5a44;"/>
+                                   </HBox>
+                            </VBox>
+                     </HBox>
+              </VBox>
+       </content>
+</ScrollPane>

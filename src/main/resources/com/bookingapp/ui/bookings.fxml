@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToWidth="true"
+            fitToHeight="true"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.bookingapp.ui.BookingController"
+            style="-fx-background: #f8f4f6;
+                   -fx-background-color: #f8f4f6;
+                   -fx-control-inner-background: #f8f4f6;">
+
+       <content>
+              <!-- Main page layout. -->
+              <VBox spacing="20"
+                    alignment="TOP_CENTER"
+                    prefWidth="1600"
+                    minHeight="1050"
+                    style="-fx-background-color:
+                           linear-gradient(to bottom, #f8f4f6, #f3ece7);">
+
+                     <padding>
+                            <Insets top="24" right="24" bottom="24" left="24"/>
+                     </padding>
+
+                     <!-- Header card containing shortcut help, centred screen title and navigation button. -->
+                     <HBox alignment="CENTER"
+                           spacing="20"
+                           maxWidth="1450"
+                           prefWidth="1450"
+                           minHeight="120"
+                           style="-fx-background-color: #ffffff;
+                                  -fx-background-radius: 18;
+                                  -fx-border-radius: 18;
+                                  -fx-border-color: #eadfe2;
+                                  -fx-padding: 22 24 22 24;">
+
+                            <!-- Left spacer used to balance the Keyboard Shortcuts and Back buttons on the right. -->
+                            <Region prefWidth="390"/>
+
+                            <!-- Screen title and short description centred in the header. -->
+                            <VBox alignment="CENTER"
+                                  spacing="4"
+                                  HBox.hgrow="ALWAYS">
+
+                                   <Label text="Bookings"
+                                          maxWidth="Infinity"
+                                          alignment="CENTER"
+                                          style="-fx-font-size: 28px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #2f2a2c;"/>
+
+                                   <Label text="Create bookings, manage advance stock requirements and keep track of customer appointments."
+                                          wrapText="true"
+                                          maxWidth="Infinity"
+                                          alignment="CENTER"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #1f1f1f;"/>
+                            </VBox>
+
+                            <!-- Opens keyboard shortcut guidance for users who cannot easily use a mouse. -->
+                            <Button text="_Keyboard Shortcuts"
+                                    mnemonicParsing="true"
+                                    onAction="#showKeyboardShortcuts"
+                                    prefWidth="190"
+                                    focusTraversable="true"
+                                    style="-fx-background-color: #eee7e3;
+                                           -fx-text-fill: #1f1f1f;
+                                           -fx-background-radius: 10;
+                                           -fx-padding: 10 18 10 18;
+                                           -fx-font-weight: bold;
+                                           -fx-cursor: hand;"/>
+
+                            <!-- Returns the user to the main dashboard screen. -->
+                            <Button text="_Back to Dashboard"
+                                    mnemonicParsing="true"
+                                    onAction="#goBack"
+                                    prefWidth="180"
+                                    focusTraversable="true"
+                                    style="-fx-background-color: #6f8190;
+                                           -fx-text-fill: white;
+                                           -fx-background-radius: 10;
+                                           -fx-padding: 10 18 10 18;
+                                           -fx-font-weight: bold;
+                                           -fx-cursor: hand;"/>
+                     </HBox>
+
+                     <!-- Top section containing booking creation and selected booking controls. -->
+                     <HBox spacing="20"
+                           alignment="TOP_CENTER"
+                           maxWidth="1450"
+                           prefWidth="1450">
+
+                            <!-- Create booking form card. -->
+                            <VBox spacing="18"
+                                  prefWidth="420"
+                                  style="-fx-background-color: white;
+                                         -fx-background-radius: 18;
+                                         -fx-border-radius: 18;
+                                         -fx-border-color: #eadfe2;
+                                         -fx-padding: 22;">
+
+                                   <Label text="Create Booking"
+                                          style="-fx-font-size: 22px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #b88fa1;"/>
+
+                                   <!-- Customer selection field. -->
+                                   <VBox spacing="6">
+                                          <Label text="Customer"
+                                                 style="-fx-font-size: 14px;
+                                                        -fx-font-weight: bold;
+                                                        -fx-text-fill: #2f2a2c;"/>
+
+                                          <ComboBox fx:id="customerComboBox"
+                                                    prefWidth="360"
+                                                    promptText="Select customer"
+                                                    focusTraversable="true"
+                                                    style="-fx-font-size: 14px;
+                                                           -fx-prompt-text-fill: #1f1f1f;
+                                                           -fx-text-fill: #1f1f1f;"/>
+                                   </VBox>
+
+                                   <!-- Collection date field. -->
+                                   <VBox spacing="6">
+                                          <Label text="Collection Date"
+                                                 style="-fx-font-size: 14px;
+                                                        -fx-font-weight: bold;
+                                                        -fx-text-fill: #2f2a2c;"/>
+
+                                          <DatePicker fx:id="bookingDatePicker"
+                                                      prefWidth="360"
+                                                      focusTraversable="true"
+                                                      style="-fx-font-size: 14px;
+                                                             -fx-prompt-text-fill: #1f1f1f;
+                                                             -fx-text-fill: #1f1f1f;"/>
+                                   </VBox>
+
+                                   <!-- Collection time field. -->
+                                   <VBox spacing="6">
+                                          <Label text="Collection Time"
+                                                 style="-fx-font-size: 14px;
+                                                        -fx-font-weight: bold;
+                                                        -fx-text-fill: #2f2a2c;"/>
+
+                                          <TextField fx:id="bookingTimeField"
+                                                     prefWidth="360"
+                                                     promptText="HH:MM"
+                                                     focusTraversable="true"
+                                                     style="-fx-prompt-text-fill: #1f1f1f;
+                                                            -fx-text-fill: #1f1f1f;
+                                                            -fx-font-size: 14px;"/>
+                                   </VBox>
+
+                                   <!-- Drop-off date field. -->
+                                   <VBox spacing="6">
+                                          <Label text="Drop-off Date"
+                                                 style="-fx-font-size: 14px;
+                                                        -fx-font-weight: bold;
+                                                        -fx-text-fill: #2f2a2c;"/>
+
+                                          <DatePicker fx:id="dropoffDatePicker"
+                                                      prefWidth="360"
+                                                      focusTraversable="true"
+                                                      style="-fx-font-size: 14px;
+                                                             -fx-prompt-text-fill: #1f1f1f;
+                                                             -fx-text-fill: #1f1f1f;"/>
+                                   </VBox>
+
+                                   <!-- Drop-off time field. -->
+                                   <VBox spacing="6">
+                                          <Label text="Drop-off Time"
+                                                 style="-fx-font-size: 14px;
+                                                        -fx-font-weight: bold;
+                                                        -fx-text-fill: #2f2a2c;"/>
+
+                                          <TextField fx:id="dropoffTimeField"
+                                                     prefWidth="360"
+                                                     promptText="HH:MM"
+                                                     focusTraversable="true"
+                                                     style="-fx-prompt-text-fill: #1f1f1f;
+                                                            -fx-text-fill: #1f1f1f;
+                                                            -fx-font-size: 14px;"/>
+                                   </VBox>
+
+                                   <!-- Drop-off address or location field. -->
+                                   <VBox spacing="6">
+                                          <Label text="Drop-off Address / Location"
+                                                 style="-fx-font-size: 14px;
+                                                        -fx-font-weight: bold;
+                                                        -fx-text-fill: #2f2a2c;"/>
+
+                                          <TextField fx:id="dropoffAddressField"
+                                                     prefWidth="360"
+                                                     promptText="Enter address or location"
+                                                     focusTraversable="true"
+                                                     style="-fx-prompt-text-fill: #1f1f1f;
+                                                            -fx-text-fill: #1f1f1f;
+                                                            -fx-font-size: 14px;"/>
+                                   </VBox>
+
+                                   <!-- Product selection field. -->
+                                   <VBox spacing="6">
+                                          <Label text="Product"
+                                                 style="-fx-font-size: 14px;
+                                                        -fx-font-weight: bold;
+                                                        -fx-text-fill: #2f2a2c;"/>
+
+                                          <ComboBox fx:id="productComboBox"
+                                                    prefWidth="360"
+                                                    promptText="Select product"
+                                                    focusTraversable="true"
+                                                    style="-fx-font-size: 14px;
+                                                           -fx-prompt-text-fill: #1f1f1f;
+                                                           -fx-text-fill: #1f1f1f;"/>
+                                   </VBox>
+
+                                   <!-- Quantity field for the selected product. -->
+                                   <VBox spacing="6">
+                                          <Label text="Quantity"
+                                                 style="-fx-font-size: 14px;
+                                                        -fx-font-weight: bold;
+                                                        -fx-text-fill: #2f2a2c;"/>
+
+                                          <TextField fx:id="quantityField"
+                                                     prefWidth="360"
+                                                     promptText="Quantity"
+                                                     focusTraversable="true"
+                                                     style="-fx-prompt-text-fill: #1f1f1f;
+                                                            -fx-text-fill: #1f1f1f;
+                                                            -fx-font-size: 14px;"/>
+                                   </VBox>
+
+                                   <!-- Creates a new booking using the entered form details. -->
+                                   <Button text="_Create Booking"
+                                           mnemonicParsing="true"
+                                           onAction="#createBooking"
+                                           prefWidth="180"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #5e99b4;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 16 10 16;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+                            </VBox>
+
+                            <!-- Selected booking management card. -->
+                            <VBox spacing="15"
+                                  prefWidth="500"
+                                  style="-fx-background-color: white;
+                                         -fx-background-radius: 18;
+                                         -fx-border-radius: 18;
+                                         -fx-border-color: #eadfe2;
+                                         -fx-padding: 22;">
+
+                                   <Label text="Manage Selected Booking"
+                                          style="-fx-font-size: 22px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #d08a2d;"/>
+
+                                   <Label text="Select a booking from the table below. Advance bookings with insufficient stock will display an AWAITING STOCK status."
+                                          wrapText="true"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <!-- Shows the inventory needed for the selected booking. -->
+                                   <Button fx:id="viewStockRequirementsButton"
+                                           text="_View Stock Requirements"
+                                           mnemonicParsing="true"
+                                           onAction="#viewSelectedStockRequirements"
+                                           prefWidth="250"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #7b8fa6;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 16 10 16;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+
+                                   <!-- Allocates available stock and confirms an AWAITING STOCK booking. -->
+                                   <Button fx:id="allocateStockButton"
+                                           text="_Allocate Stock and Confirm"
+                                           mnemonicParsing="true"
+                                           onAction="#allocateStockAndConfirmSelectedBooking"
+                                           prefWidth="250"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #50a26b;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 16 10 16;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+
+                                   <Label text="The allocation action rechecks current inventory. Stock is deducted only when sufficient usable FIFO batches are available."
+                                          wrapText="true"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <!-- Cancels the selected booking and restores stock where appropriate. -->
+                                   <Button fx:id="cancelBookingButton"
+                                           text="Ca_ncel Selected Booking"
+                                           mnemonicParsing="true"
+                                           onAction="#cancelSelectedBooking"
+                                           prefWidth="250"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #d89a3c;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 16 10 16;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+
+                                   <!-- Deletes a booking only after it has already been cancelled. -->
+                                   <Button fx:id="deleteCancelledBookingButton"
+                                           text="_Delete Selected Cancelled Booking"
+                                           mnemonicParsing="true"
+                                           onAction="#deleteSelectedCancelledBooking"
+                                           prefWidth="280"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #c35656;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 16 10 16;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+                            </VBox>
+                     </HBox>
+
+                     <!-- Booking list card. -->
+                     <VBox spacing="16"
+                           maxWidth="1450"
+                           prefWidth="1450"
+                           style="-fx-background-color: #ffffff;
+                                  -fx-background-radius: 18;
+                                  -fx-border-radius: 18;
+                                  -fx-border-color: #eadfe2;
+                                  -fx-padding: 22;">
+
+                            <Label text="Booking List"
+                                   style="-fx-font-size: 24px;
+                                          -fx-font-weight: bold;
+                                          -fx-text-fill: #50a26b;"/>
+
+                            <Label text="CONFIRMED means stock has been allocated. AWAITING STOCK means the advance booking has been accepted but inventory still needs to be received."
+                                   wrapText="true"
+                                   style="-fx-font-size: 14px;
+                                          -fx-text-fill: #1f1f1f;"/>
+
+                            <!-- Search area used to filter the bookings table. -->
+                            <HBox alignment="CENTER_LEFT"
+                                  spacing="12"
+                                  style="-fx-background-color: #f8f4f6;
+                                         -fx-background-radius: 12;
+                                         -fx-border-radius: 12;
+                                         -fx-border-color: #eadfe2;
+                                         -fx-padding: 14;">
+
+                                   <Label text="Search bookings:"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <!-- Search box controlled by BookingController. -->
+                                   <TextField fx:id="searchField"
+                                              promptText="Search by customer, product, date, status, address or booking ID..."
+                                              prefWidth="560"
+                                              focusTraversable="true"
+                                              style="-fx-prompt-text-fill: #1f1f1f;
+                                                     -fx-text-fill: #1f1f1f;
+                                                     -fx-font-size: 14px;"/>
+
+                                   <Label text="Search updates automatically as you type."
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #1f1f1f;"/>
+                            </HBox>
+
+                            <!-- Table showing all bookings and their current status. -->
+                            <TableView fx:id="bookingTable"
+                                       prefHeight="480"
+                                       prefWidth="1400"
+                                       focusTraversable="true"
+                                       style="-fx-background-radius: 12;
+                                              -fx-border-radius: 12;
+                                              -fx-border-color: #eadfe2;">
+
+                                   <columns>
+                                          <!-- Customer name for the booking. -->
+                                          <TableColumn fx:id="customerNameColumn" text="Customer Name" prefWidth="180"/>
+
+                                          <!-- Collection date for the booking. -->
+                                          <TableColumn fx:id="collectionDateColumn" text="Collection Date" prefWidth="120"/>
+
+                                          <!-- Collection time for the booking. -->
+                                          <TableColumn fx:id="collectionTimeColumn" text="Collection Time" prefWidth="120"/>
+
+                                          <!-- Drop-off date for the booking. -->
+                                          <TableColumn fx:id="dropoffDateColumn" text="Drop-off Date" prefWidth="120"/>
+
+                                          <!-- Drop-off time for the booking. -->
+                                          <TableColumn fx:id="dropoffTimeColumn" text="Drop-off Time" prefWidth="120"/>
+
+                                          <!-- Drop-off address or location for the booking. -->
+                                          <TableColumn fx:id="dropoffAddressColumn" text="Drop-off Address / Location" prefWidth="240"/>
+
+                                          <!-- Products and quantities included in the booking. -->
+                                          <TableColumn fx:id="productQuantitiesColumn" text="Product Quantities" prefWidth="260"/>
+
+                                          <!-- Inventory or item details required for the booking. -->
+                                          <TableColumn fx:id="itemsRequiredColumn" text="Items Required" prefWidth="220"/>
+
+                                          <!-- Current booking status. -->
+                                          <TableColumn fx:id="statusColumn" text="Status" prefWidth="150"/>
+
+                                          <!-- Internal booking ID. -->
+                                          <TableColumn fx:id="bookingIdColumn" text="Booking ID" prefWidth="100"/>
+                                   </columns>
+                            </TableView>
+
+                            <!-- Booking list action buttons. -->
+                            <HBox spacing="12">
+                                   <!-- Reloads the booking table. -->
+                                   <Button text="_Refresh Bookings"
+                                           mnemonicParsing="true"
+                                           onAction="#loadBookings"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #50a26b;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 18 10 18;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+
+                                   <!-- Returns the user to the main dashboard screen. -->
+                                   <Button text="Back to Dashboard"
+                                           mnemonicParsing="false"
+                                           onAction="#goBack"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #6f8190;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 18 10 18;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+                            </HBox>
+                     </VBox>
+              </VBox>
+       </content>
+</ScrollPane>

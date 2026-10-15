@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    Expiry and waste management screen.
+
+    This screen allows staff to monitor expired stock, identify batches that are
+    approaching their expiry date, record waste against a selected inventory
+    batch and review historical waste records.
+-->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.bookingapp.ui.ExpiryWasteController"
+            fitToWidth="true"
+            pannable="true"
+            hbarPolicy="AS_NEEDED"
+            vbarPolicy="AS_NEEDED"
+            style="-fx-background: #f8f4f6;
+                   -fx-background-color: #f8f4f6;">
+
+    <content>
+        <!-- Main page layout. -->
+        <VBox spacing="22"
+              alignment="TOP_CENTER"
+              prefWidth="1600"
+              minHeight="1250"
+              style="-fx-background-color:
+                     linear-gradient(to bottom, #f8f4f6, #f3ece7);">
+
+            <padding>
+                <Insets top="25" right="25" bottom="30" left="25"/>
+            </padding>
+
+            <!-- Header card containing the screen title and navigation buttons. -->
+            <HBox alignment="CENTER_LEFT"
+                  spacing="15"
+                  maxWidth="1450"
+                  prefWidth="1450"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 14;
+                         -fx-border-color: #ddd4cf;
+                         -fx-border-radius: 14;
+                         -fx-padding: 20;">
+
+                <!-- Screen title and short description. -->
+                <VBox spacing="5"
+                      HBox.hgrow="ALWAYS">
+
+                    <Label text="Expiry and Waste Management"
+                           style="-fx-font-size: 25px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <Label text="Monitor expiring stock, record waste and calculate the financial value of stock losses."
+                           wrapText="true"
+                           style="-fx-font-size: 14px;
+                                  -fx-text-fill: #1f1f1f;"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Opens keyboard shortcut guidance for users who cannot easily use a mouse. -->
+                <Button text="_Keyboard Shortcuts (Alt+K)"
+                        mnemonicParsing="true"
+                        onAction="#showKeyboardShortcuts"
+                        focusTraversable="true"
+                        prefWidth="220"
+                        prefHeight="40"
+                        style="-fx-background-color: #eee7e3;
+                               -fx-text-fill: #1f1f1f;
+                               -fx-background-radius: 10;
+                               -fx-padding: 10 18 10 18;
+                               -fx-font-weight: bold;
+                               -fx-cursor: hand;"/>
+
+                <!-- Reloads all expiry, waste and summary data. -->
+                <Button text="Refresh _All"
+                        mnemonicParsing="true"
+                        onAction="#refreshAllData"
+                        prefWidth="110"
+                        prefHeight="40"
+                        focusTraversable="true"
+                        style="-fx-font-size: 14px;
+                               -fx-background-color: #50a26b;
+                               -fx-text-fill: white;
+                               -fx-background-radius: 8;
+                               -fx-cursor: hand;"/>
+
+                <!-- Returns the user to the main dashboard screen. -->
+                <Button text="_Back to Dashboard"
+                        mnemonicParsing="true"
+                        onAction="#goBack"
+                        prefWidth="160"
+                        prefHeight="40"
+                        focusTraversable="true"
+                        style="-fx-font-size: 14px;
+                               -fx-font-weight: bold;
+                               -fx-background-color: #6f8190;
+                               -fx-text-fill: white;
+                               -fx-background-radius: 8;
+                               -fx-cursor: hand;"/>
+            </HBox>
+
+            <!-- Summary cards showing expiry and financial risk information. -->
+            <HBox spacing="18"
+                  alignment="CENTER_LEFT"
+                  maxWidth="1450"
+                  prefWidth="1450">
+
+                <!-- Expired stock count card. -->
+                <VBox spacing="6"
+                      prefWidth="270"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 12;
+                             -fx-border-color: #ddd4cf;
+                             -fx-border-radius: 12;
+                             -fx-padding: 18;">
+
+                    <Label text="Expired Stock"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #a94442;"/>
+
+                    <Label fx:id="expiredCountLabel"
+                           text="Expired batches: 0"
+                           style="-fx-font-size: 18px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+                </VBox>
+
+                <!-- Expiring soon count card. -->
+                <VBox spacing="6"
+                      prefWidth="300"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 12;
+                             -fx-border-color: #ddd4cf;
+                             -fx-border-radius: 12;
+                             -fx-padding: 18;">
+
+                    <Label text="Expiring Soon"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #d49b4e;"/>
+
+                    <Label fx:id="expiringSoonCountLabel"
+                           text="Expiring within 30 days: 0"
+                           style="-fx-font-size: 18px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+                </VBox>
+
+                <!-- Stock value at risk card. -->
+                <VBox spacing="6"
+                      prefWidth="330"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 12;
+                             -fx-border-color: #ddd4cf;
+                             -fx-border-radius: 12;
+                             -fx-padding: 18;">
+
+                    <Label text="Financial Risk"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #8a5a44;"/>
+
+                    <Label fx:id="stockValueAtRiskLabel"
+                           text="Stock value at risk: £0.00"
+                           style="-fx-font-size: 18px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Expiry monitoring section. -->
+            <VBox spacing="14"
+                  maxWidth="1450"
+                  prefWidth="1450"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 14;
+                         -fx-border-color: #ddd4cf;
+                         -fx-border-radius: 14;
+                         -fx-padding: 20;">
+
+                <!-- Expiry monitoring heading, filter and refresh button. -->
+                <HBox alignment="CENTER_LEFT"
+                      spacing="12">
+
+                    <VBox spacing="4">
+                        <Label text="Expiry Monitoring"
+                               style="-fx-font-size: 19px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <Label text="Expired batches and batches approaching their expiry date are shown below."
+                               wrapText="true"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+                    </VBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Label text="Show stock expiring within:"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <!-- Period selector used to decide how far ahead expiry warnings should look. -->
+                    <ComboBox fx:id="expiryPeriodComboBox"
+                              promptText="Select period"
+                              prefWidth="130"
+                              prefHeight="38"
+                              focusTraversable="true"
+                              style="-fx-prompt-text-fill: #1f1f1f;
+                                     -fx-text-fill: #1f1f1f;
+                                     -fx-font-size: 14px;"/>
+
+                    <!-- Reloads the expiry batch table. -->
+                    <Button text="Refresh _Expiry"
+                            mnemonicParsing="true"
+                            onAction="#loadExpiryBatches"
+                            prefWidth="125"
+                            prefHeight="38"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-background-color: #50a26b;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 8;
+                                   -fx-cursor: hand;"/>
+                </HBox>
+
+                <!-- Search area used to filter the expiry batch table. -->
+                <HBox alignment="CENTER_LEFT"
+                      spacing="10"
+                      style="-fx-background-color: #f8f4f6;
+                             -fx-background-radius: 10;
+                             -fx-border-color: #ddd4cf;
+                             -fx-border-radius: 10;
+                             -fx-padding: 12;">
+
+                    <Label text="Search expiry:"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <!-- Search box controlled by ExpiryWasteController. -->
+                    <TextField fx:id="expirySearchField"
+                               promptText="Search by item, supplier, batch code, expiry date, status or value..."
+                               prefWidth="650"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+                </HBox>
+
+                <!-- Table showing expired and expiring inventory batches. -->
+                <TableView fx:id="expiryBatchTable"
+                           prefHeight="360"
+                           VBox.vgrow="ALWAYS"
+                           focusTraversable="true"
+                           style="-fx-background-color: white;
+                                  -fx-border-color: #ddd4cf;
+                                  -fx-border-radius: 10;
+                                  -fx-background-radius: 10;">
+
+                    <columns>
+                        <!-- Internal inventory batch ID. -->
+                        <TableColumn fx:id="expiryBatchIdColumn"
+                                     text="ID"
+                                     prefWidth="55"/>
+
+                        <!-- Inventory item name. -->
+                        <TableColumn fx:id="expiryItemColumn"
+                                     text="Inventory Item"
+                                     prefWidth="145"/>
+
+                        <!-- Supplier linked to the batch, if available. -->
+                        <TableColumn fx:id="expirySupplierColumn"
+                                     text="Supplier"
+                                     prefWidth="125"/>
+
+                        <!-- Batch code used to identify the stock batch. -->
+                        <TableColumn fx:id="expiryBatchCodeColumn"
+                                     text="Batch Code"
+                                     prefWidth="125"/>
+
+                        <!-- Date the batch was purchased. -->
+                        <TableColumn fx:id="purchaseDateColumn"
+                                     text="Purchase Date"
+                                     prefWidth="110"/>
+
+                        <!-- Expiry date for the batch. -->
+                        <TableColumn fx:id="expiryDateColumn"
+                                     text="Expiry Date"
+                                     prefWidth="110"/>
+
+                        <!-- Quantity remaining in the batch. -->
+                        <TableColumn fx:id="expiryRemainingColumn"
+                                     text="Remaining"
+                                     prefWidth="90"/>
+
+                        <!-- Unit cost for the batch. -->
+                        <TableColumn fx:id="expiryUnitCostColumn"
+                                     text="Unit Cost"
+                                     prefWidth="85"/>
+
+                        <!-- Financial value of stock at risk. -->
+                        <TableColumn fx:id="expiryValueColumn"
+                                     text="Value at Risk"
+                                     prefWidth="100"/>
+
+                        <!-- Expiry status such as expired or expiring soon. -->
+                        <TableColumn fx:id="expiryStatusColumn"
+                                     text="Expiry Status"
+                                     prefWidth="150"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Waste recording and selected batch detail section. -->
+            <HBox spacing="22"
+                  alignment="TOP_LEFT"
+                  maxWidth="1450"
+                  prefWidth="1450">
+
+                <!-- Waste recording form card. -->
+                <VBox spacing="12"
+                      prefWidth="390"
+                      minWidth="390"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 14;
+                             -fx-border-color: #ddd4cf;
+                             -fx-border-radius: 14;
+                             -fx-padding: 20;">
+
+                    <Label text="Record Inventory Waste"
+                           style="-fx-font-size: 19px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <Label text="Select a specific batch so the correct stock cost and quantity are updated."
+                           wrapText="true"
+                           style="-fx-font-size: 14px;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <!-- Inventory batch selection field. -->
+                    <Label text="Inventory Batch"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <ComboBox fx:id="wasteBatchComboBox"
+                              promptText="Select inventory batch"
+                              editable="false"
+                              prefWidth="350"
+                              prefHeight="38"
+                              focusTraversable="true"
+                              style="-fx-prompt-text-fill: #1f1f1f;
+                                     -fx-text-fill: #1f1f1f;
+                                     -fx-font-size: 14px;"/>
+
+                    <!-- Date the waste was recorded. -->
+                    <Label text="Waste Date"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <DatePicker fx:id="wasteDatePicker"
+                                promptText="dd/MM/yyyy"
+                                prefWidth="350"
+                                prefHeight="38"
+                                focusTraversable="true"
+                                style="-fx-prompt-text-fill: #1f1f1f;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-font-size: 14px;"/>
+
+                    <!-- Quantity being written off as waste. -->
+                    <Label text="Quantity Wasted"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <TextField fx:id="wasteQuantityField"
+                               promptText="For example: 2.5"
+                               prefWidth="350"
+                               prefHeight="38"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Waste reason selection field. -->
+                    <Label text="Reason"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <ComboBox fx:id="wasteReasonComboBox"
+                              promptText="Select waste reason"
+                              editable="false"
+                              prefWidth="350"
+                              prefHeight="38"
+                              focusTraversable="true"
+                              style="-fx-prompt-text-fill: #1f1f1f;
+                                     -fx-text-fill: #1f1f1f;
+                                     -fx-font-size: 14px;"/>
+
+                    <!-- Optional notes explaining the waste record. -->
+                    <Label text="Notes"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <TextArea fx:id="wasteNotesArea"
+                              promptText="Optional notes about the waste"
+                              wrapText="true"
+                              prefWidth="350"
+                              prefHeight="100"
+                              focusTraversable="true"
+                              style="-fx-prompt-text-fill: #1f1f1f;
+                                     -fx-text-fill: #1f1f1f;
+                                     -fx-font-size: 14px;"/>
+
+                    <!-- Estimated value calculated from quantity wasted and batch unit cost. -->
+                    <Label fx:id="wasteValuePreviewLabel"
+                           text="Estimated waste value: £0.00"
+                           style="-fx-font-size: 15px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #a94442;"/>
+
+                    <!-- Records the waste and updates inventory quantities. -->
+                    <Button fx:id="recordWasteButton"
+                            text="Record _Waste"
+                            mnemonicParsing="true"
+                            onAction="#recordWaste"
+                            prefWidth="350"
+                            prefHeight="42"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #a94442;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 9;
+                                   -fx-cursor: hand;"/>
+
+                    <!-- Clears the waste form. -->
+                    <Button text="_Clear Waste Form"
+                            mnemonicParsing="true"
+                            onAction="#clearWasteForm"
+                            prefWidth="350"
+                            prefHeight="40"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-background-color: #eee7e3;
+                                   -fx-text-fill: #3f3936;
+                                   -fx-background-radius: 9;
+                                   -fx-cursor: hand;"/>
+                </VBox>
+
+                <!-- Selected batch detail card. -->
+                <VBox spacing="14"
+                      HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 14;
+                             -fx-border-color: #ddd4cf;
+                             -fx-border-radius: 14;
+                             -fx-padding: 20;">
+
+                    <Label text="Selected Batch Details"
+                           style="-fx-font-size: 19px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <Label text="Review the batch information before recording waste."
+                           wrapText="true"
+                           style="-fx-font-size: 14px;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <!-- Labels populated when a batch is selected for waste recording. -->
+                    <VBox spacing="14"
+                          style="-fx-background-color: #f8f4f6;
+                                 -fx-background-radius: 12;
+                                 -fx-padding: 20;">
+
+                        <Label fx:id="selectedBatchLabel"
+                               text="Selected batch: None"
+                               style="-fx-font-size: 15px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <Label fx:id="selectedItemLabel"
+                               text="Inventory item: None"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <Label fx:id="selectedExpiryLabel"
+                               text="Expiry date: Not selected"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <Label fx:id="selectedRemainingLabel"
+                               text="Quantity remaining: 0"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <Label fx:id="selectedUnitCostLabel"
+                               text="Unit cost: £0.00"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+                    </VBox>
+
+                    <!-- Explanation of the waste recording process. -->
+                    <Label text="Waste processing"
+                           style="-fx-font-size: 15px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #8a5a44;"/>
+
+                    <Label text="Recording waste reduces both the selected batch quantity and the overall inventory quantity. A stock movement and financial waste record are also created."
+                           wrapText="true"
+                           style="-fx-font-size: 14px;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <Label text="Expired stock is not removed automatically. The business owner must confirm that the stock has been discarded."
+                           wrapText="true"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #a94442;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Waste history section. -->
+            <VBox spacing="14"
+                  maxWidth="1450"
+                  prefWidth="1450"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 14;
+                         -fx-border-color: #ddd4cf;
+                         -fx-border-radius: 14;
+                         -fx-padding: 20;">
+
+                <!-- Waste history heading, total value and refresh button. -->
+                <HBox alignment="CENTER_LEFT"
+                      spacing="12">
+
+                    <VBox spacing="4">
+                        <Label text="Waste History"
+                               style="-fx-font-size: 19px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <Label text="Historical waste records are retained for traceability and financial reporting."
+                               wrapText="true"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+                    </VBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <!-- Total financial value of recorded waste. -->
+                    <Label fx:id="totalWasteValueLabel"
+                           text="Total recorded waste value: £0.00"
+                           style="-fx-font-size: 16px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #a94442;"/>
+
+                    <!-- Reloads the waste history table. -->
+                    <Button text="Refresh _History"
+                            mnemonicParsing="true"
+                            onAction="#loadWasteHistory"
+                            prefWidth="125"
+                            prefHeight="38"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-background-color: #50a26b;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 8;
+                                   -fx-cursor: hand;"/>
+                </HBox>
+
+                <!-- Search area used to filter waste history records. -->
+                <HBox alignment="CENTER_LEFT"
+                      spacing="10"
+                      style="-fx-background-color: #f8f4f6;
+                             -fx-background-radius: 10;
+                             -fx-border-color: #ddd4cf;
+                             -fx-border-radius: 10;
+                             -fx-padding: 12;">
+
+                    <Label text="Search waste:"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <!-- Search box controlled by ExpiryWasteController. -->
+                    <TextField fx:id="wasteHistorySearchField"
+                               promptText="Search by item, batch, waste date, reason, value or notes..."
+                               prefWidth="650"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+                </HBox>
+
+                <!-- Table showing historical inventory waste records. -->
+                <TableView fx:id="wasteHistoryTable"
+                           prefHeight="390"
+                           VBox.vgrow="ALWAYS"
+                           focusTraversable="true"
+                           style="-fx-background-color: white;
+                                  -fx-border-color: #ddd4cf;
+                                  -fx-border-radius: 10;
+                                  -fx-background-radius: 10;">
+
+                    <columns>
+                        <!-- Internal waste record ID. -->
+                        <TableColumn fx:id="wasteIdColumn"
+                                     text="ID"
+                                     prefWidth="55"/>
+
+                        <!-- Inventory item linked to the waste record. -->
+                        <TableColumn fx:id="wasteItemColumn"
+                                     text="Inventory Item"
+                                     prefWidth="150"/>
+
+                        <!-- Batch linked to the waste record. -->
+                        <TableColumn fx:id="wasteBatchColumn"
+                                     text="Batch"
+                                     prefWidth="130"/>
+
+                        <!-- Date waste was recorded. -->
+                        <TableColumn fx:id="wasteDateColumn"
+                                     text="Waste Date"
+                                     prefWidth="105"/>
+
+                        <!-- Quantity written off as waste. -->
+                        <TableColumn fx:id="wasteQuantityColumn"
+                                     text="Quantity"
+                                     prefWidth="85"/>
+
+                        <!-- Reason selected for the waste record. -->
+                        <TableColumn fx:id="wasteReasonColumn"
+                                     text="Reason"
+                                     prefWidth="135"/>
+
+                        <!-- Unit cost from the inventory batch. -->
+                        <TableColumn fx:id="wasteUnitCostColumn"
+                                     text="Unit Cost"
+                                     prefWidth="85"/>
+
+                        <!-- Total financial value of the waste. -->
+                        <TableColumn fx:id="wasteValueColumn"
+                                     text="Waste Value"
+                                     prefWidth="100"/>
+
+                        <!-- Optional notes entered by staff. -->
+                        <TableColumn fx:id="wasteNotesColumn"
+                                     text="Notes"
+                                     prefWidth="220"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </VBox>
+    </content>
+</ScrollPane>

@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    Dashboard screen.
+
+    This is the main navigation screen for the staff-facing booking and
+    inventory management system. It gives staff access to bookings, inventory,
+    website booking requests, customers, products, suppliers, purchase orders,
+    expiry and waste management, data retention, and low-stock warnings.
+-->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.bookingapp.ui.DashboardController"
+            fitToWidth="true"
+            pannable="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            style="-fx-background: #f8f4f6;
+                   -fx-background-color: #f8f4f6;
+                   -fx-control-inner-background: #f8f4f6;">
+
+    <content>
+        <!-- Main dashboard page layout. -->
+        <VBox spacing="25"
+              alignment="TOP_CENTER"
+              minHeight="1900"
+              style="-fx-background-color:
+                     linear-gradient(to bottom, #f8f4f6, #f3ece7);">
+
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <!-- Header card containing the application title and account buttons. -->
+            <HBox alignment="CENTER_LEFT"
+                  spacing="10"
+                  maxWidth="1400"
+                  prefWidth="1400"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 14;
+                         -fx-padding: 20;
+                         -fx-border-color: #ddd4cf;
+                         -fx-border-radius: 14;">
+
+                <!-- Application title and dashboard label. -->
+                <VBox spacing="5">
+                    <Label text="Booking and Inventory Management System"
+                           style="-fx-font-size: 26px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <Label text="Dashboard"
+                           style="-fx-font-size: 15px;
+                                  -fx-text-fill: #1f1f1f;"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Account action buttons. -->
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+
+                    <!-- Opens the change password screen. -->
+                    <Button text="Change Password"
+                            onAction="#openChangePassword"
+                            prefWidth="150"
+                            prefHeight="40"
+                            focusTraversable="true"
+                            style="-fx-font-size: 13px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #a8b6c8;
+                                   -fx-text-fill: #1f1f1f;
+                                   -fx-background-radius: 8;"/>
+
+                    <!-- Logs the current user out and returns to the login screen. -->
+                    <Button text="Log out"
+                            onAction="#logout"
+                            prefWidth="110"
+                            prefHeight="40"
+                            focusTraversable="true"
+                            style="-fx-font-size: 13px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #a8b6c8;
+                                   -fx-text-fill: #1f1f1f;
+                                   -fx-background-radius: 8;"/>
+                </HBox>
+            </HBox>
+
+            <!-- Opens keyboard shortcut guidance for users who cannot easily use a mouse. -->
+            <Button text="_Keyboard Shortcuts (Alt+K)"
+                    mnemonicParsing="true"
+                    onAction="#showKeyboardShortcuts"
+                    focusTraversable="true"
+                    prefWidth="220"
+                    style="-fx-background-color: #eee7e3;
+                           -fx-text-fill: #1f1f1f;
+                           -fx-background-radius: 10;
+                           -fx-padding: 10 18 10 18;
+                           -fx-font-weight: bold;
+                           -fx-cursor: hand;"/>
+
+            <!-- Welcome panel explaining the main dashboard purpose. -->
+            <VBox spacing="8"
+                  alignment="CENTER"
+                  maxWidth="1400"
+                  prefWidth="1400"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 14;
+                         -fx-padding: 22;
+                         -fx-border-color: #ddd4cf;
+                         -fx-border-radius: 14;">
+
+                <Label text="Welcome"
+                       style="-fx-font-size: 20px;
+                              -fx-font-weight: bold;
+                              -fx-text-fill: #1f1f1f;"/>
+
+                <Label text="Choose an area below to manage bookings, stock, suppliers, purchase orders, customers, products, recipe requirements, website booking requests, request history and data retention."
+                       wrapText="true"
+                       textAlignment="CENTER"
+                       style="-fx-font-size: 14px;
+                              -fx-text-fill: #1f1f1f;"/>
+            </VBox>
+
+            <!-- Dashboard content area containing navigation cards and low-stock warnings. -->
+            <HBox spacing="24"
+                  alignment="TOP_CENTER"
+                  maxWidth="1400"
+                  prefWidth="1400">
+
+                <!-- Navigation card grid. -->
+                <GridPane hgap="20"
+                          vgap="20"
+                          alignment="TOP_CENTER"
+                          prefWidth="760">
+
+                    <!-- Bookings navigation card. -->
+                    <VBox GridPane.columnIndex="0"
+                          GridPane.rowIndex="0"
+                          spacing="14"
+                          alignment="CENTER"
+                          prefWidth="360"
+                          prefHeight="220"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 22;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 14;">
+
+                        <Label text="Bookings"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #b88fa1;"/>
+
+                        <Label text="Create, cancel, restore and view confirmed bookings."
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Opens the bookings screen. -->
+                        <Button text="Open Bookings"
+                                onAction="#openBookings"
+                                prefWidth="190"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 13px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+
+                    <!-- Inventory navigation card. -->
+                    <VBox GridPane.columnIndex="1"
+                          GridPane.rowIndex="0"
+                          spacing="14"
+                          alignment="CENTER"
+                          prefWidth="360"
+                          prefHeight="220"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 22;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 14;">
+
+                        <Label text="Inventory"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #b88fa1;"/>
+
+                        <Label text="Track stock quantities, re-order levels and inventory records."
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Opens the inventory screen. -->
+                        <Button text="Open Inventory"
+                                onAction="#openInventory"
+                                prefWidth="190"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 13px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+
+                    <!-- Booking requests navigation card. -->
+                    <VBox GridPane.columnIndex="0"
+                          GridPane.rowIndex="1"
+                          spacing="14"
+                          alignment="CENTER"
+                          prefWidth="360"
+                          prefHeight="220"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 22;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 14;">
+
+                        <Label text="Booking Requests"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #b88fa1;"/>
+
+                        <Label text="Review website requests, calculate deposits, record payments and confirm bookings."
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Opens the website booking requests screen. -->
+                        <Button text="Open Requests"
+                                onAction="#openBookingRequests"
+                                prefWidth="190"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 13px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+
+                    <!-- Products navigation card. -->
+                    <VBox GridPane.columnIndex="1"
+                          GridPane.rowIndex="1"
+                          spacing="14"
+                          alignment="CENTER"
+                          prefWidth="360"
+                          prefHeight="220"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 22;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 14;">
+
+                        <Label text="Products"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #b88fa1;"/>
+
+                        <Label text="Manage finished products available for customer bookings."
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Opens the products screen. -->
+                        <Button text="Open Products"
+                                onAction="#openProducts"
+                                prefWidth="190"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 13px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+
+                    <!-- Customers navigation card. -->
+                    <VBox GridPane.columnIndex="0"
+                          GridPane.rowIndex="2"
+                          spacing="14"
+                          alignment="CENTER"
+                          prefWidth="360"
+                          prefHeight="220"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 22;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 14;">
+
+                        <Label text="Customers"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #b88fa1;"/>
+
+                        <Label text="Add, edit and manage customer records."
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Opens the customers screen. -->
+                        <Button text="Open Customers"
+                                onAction="#openCustomers"
+                                prefWidth="190"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 13px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+
+                    <!-- Recipe items navigation card. -->
+                    <VBox GridPane.columnIndex="1"
+                          GridPane.rowIndex="2"
+                          spacing="14"
+                          alignment="CENTER"
+                          prefWidth="360"
+                          prefHeight="220"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 22;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 14;">
+
+                        <Label text="Recipe Items"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #b88fa1;"/>
+
+                        <Label text="Link products to the inventory items they consume."
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Opens the recipe items screen. -->
+                        <Button text="Open Recipe Items"
+                                onAction="#openRecipeItems"
+                                prefWidth="190"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 13px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+
+                    <!-- Suppliers navigation card. -->
+                    <VBox GridPane.columnIndex="0"
+                          GridPane.rowIndex="3"
+                          spacing="14"
+                          alignment="CENTER"
+                          prefWidth="360"
+                          prefHeight="220"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 22;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 14;">
+
+                        <Label text="Suppliers"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #b88fa1;"/>
+
+                        <Label text="Manage supplier contact details for purchasing."
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Opens the suppliers screen. -->
+                        <Button text="Open Suppliers"
+                                onAction="#openSuppliers"
+                                prefWidth="190"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 13px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+
+                    <!-- Inventory batches navigation card. -->
+                    <VBox GridPane.columnIndex="1"
+                          GridPane.rowIndex="3"
+                          spacing="14"
+                          alignment="CENTER"
+                          prefWidth="360"
+                          prefHeight="220"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 22;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 14;">
+
+                        <Label text="Inventory Batches"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #b88fa1;"/>
+
+                        <Label text="Manage costed stock batches and FIFO inventory values."
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Opens the inventory batches screen. -->
+                        <Button text="Open Inventory Batches"
+                                onAction="#openInventoryBatches"
+                                prefWidth="210"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 13px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+
+                    <!-- Data retention navigation card. -->
+                    <VBox GridPane.columnIndex="0"
+                          GridPane.rowIndex="4"
+                          spacing="14"
+                          alignment="CENTER"
+                          prefWidth="360"
+                          prefHeight="220"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 22;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 14;">
+
+                        <Label text="Data Retention"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #b88fa1;"/>
+
+                        <Label text="Review old customer records and anonymise personal data after the retention period."
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Opens the data retention review screen. -->
+                        <Button text="_Open Data Retention"
+                                mnemonicParsing="true"
+                                onAction="#openDataRetention"
+                                prefWidth="210"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 13px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+
+                    <!-- Booking request history navigation card. -->
+                    <VBox GridPane.columnIndex="1"
+                          GridPane.rowIndex="4"
+                          spacing="14"
+                          alignment="CENTER"
+                          prefWidth="360"
+                          prefHeight="220"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 22;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 14;">
+
+                        <Label text="Request History"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #b88fa1;"/>
+
+                        <Label text="Review confirmed and rejected website booking requests, payment references and linked booking IDs."
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Opens the confirmed and rejected website request history screen. -->
+                        <Button text="Open Request History"
+                                onAction="#openBookingRequestHistory"
+                                prefWidth="210"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 13px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+
+                    <!-- Purchase orders navigation card. -->
+                    <VBox GridPane.columnIndex="0"
+                          GridPane.rowIndex="5"
+                          GridPane.columnSpan="2"
+                          spacing="14"
+                          alignment="CENTER"
+                          prefWidth="740"
+                          prefHeight="220"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 22;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 14;">
+
+                        <Label text="Purchase Orders"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #b88fa1;"/>
+
+                        <Label text="Create supplier orders, calculate costs and receive delivered stock into inventory batches."
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Opens the purchase orders screen. -->
+                        <Button text="Open Purchase Orders"
+                                onAction="#openPurchaseOrders"
+                                prefWidth="210"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 13px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+
+                    <!-- Expiry and waste management navigation card. -->
+                    <VBox GridPane.columnIndex="0"
+                          GridPane.rowIndex="6"
+                          GridPane.columnSpan="2"
+                          spacing="14"
+                          alignment="CENTER"
+                          prefWidth="740"
+                          prefHeight="220"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 22;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 14;">
+
+                        <Label text="Expiry and Waste Management"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #b88fa1;"/>
+
+                        <Label text="Monitor expiring stock, record waste and calculate the financial value of stock losses."
+                               wrapText="true"
+                               textAlignment="CENTER"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Opens the expiry and waste management screen. -->
+                        <Button text="Open Expiry and Waste"
+                                onAction="#openExpiryWaste"
+                                prefWidth="210"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 13px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+                </GridPane>
+
+                <!-- Notification and calendar panel. -->
+                <VBox spacing="16"
+                      prefWidth="420"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 14;
+                             -fx-padding: 20;
+                             -fx-border-color: #ddd4cf;
+                             -fx-border-radius: 14;">
+
+                    <!-- Incoming website request notification area. -->
+                    <VBox spacing="8"
+                          style="-fx-background-color: #f8f4f6;
+                                 -fx-background-radius: 12;
+                                 -fx-padding: 14;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 12;">
+
+                        <Label text="Incoming Requests"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <Label fx:id="incomingRequestLabel"
+                               text="No new booking requests"
+                               wrapText="true"
+                               style="-fx-font-size: 14px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <Button text="Open Requests"
+                                onAction="#openBookingRequests"
+                                prefWidth="180"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+
+                        <Button text="Refresh Requests"
+                                onAction="#refreshIncomingRequestNotification"
+                                prefWidth="180"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #b88fa1;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-background-radius: 8;"/>
+                    </VBox>
+
+                    <!-- Calendar area showing bookings due on the selected date. -->
+                    <VBox spacing="8"
+                          style="-fx-background-color: #f8f4f6;
+                                 -fx-background-radius: 12;
+                                 -fx-padding: 14;
+                                 -fx-border-color: #ddd4cf;
+                                 -fx-border-radius: 12;">
+
+                        <Label text="Orders Due"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <Label text="Select a date to view confirmed bookings due on that day."
+                               wrapText="true"
+                               style="-fx-font-size: 14px;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <DatePicker fx:id="dashboardDatePicker"
+                                    prefWidth="220"
+                                    prefHeight="38"
+                                    onAction="#loadBookingsForSelectedDate"
+                                    style="-fx-prompt-text-fill: #1f1f1f;
+                                           -fx-text-fill: #1f1f1f;
+                                           -fx-font-size: 14px;"/>
+
+                        <ListView fx:id="dueBookingsListView"
+                                  prefHeight="260"
+                                  style="-fx-background-color: white;
+                                         -fx-border-color: #ddd4cf;
+                                         -fx-border-radius: 10;
+                                         -fx-background-radius: 10;
+                                         -fx-text-fill: #1f1f1f;
+                                         -fx-font-size: 14px;"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Low-stock warning panel. -->
+                <VBox spacing="12"
+                      prefWidth="420"
+                      prefHeight="1600"
+                      minHeight="1600"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 14;
+                             -fx-padding: 20;
+                             -fx-border-color: #ddd4cf;
+                             -fx-border-radius: 14;">
+
+                    <Label text="Low Stock Warning"
+                           style="-fx-font-size: 18px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <Label text="Items at or below their re-order level"
+                           style="-fx-font-size: 14px;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <!--
+                        List showing inventory items that are at or below their
+                        re-order level. The list is populated by DashboardController.
+                    -->
+                    <ListView fx:id="lowStockListView"
+                              prefHeight="1450"
+                              VBox.vgrow="ALWAYS"
+                              style="-fx-background-color: white;
+                                     -fx-border-color: #ddd4cf;
+                                     -fx-border-radius: 10;
+                                     -fx-background-radius: 10;
+                                     -fx-text-fill: #1f1f1f;
+                                     -fx-font-size: 14px;"/>
+
+                    <!-- Reloads the low-stock warning list. -->
+                    <Button text="Refresh Low Stock"
+                            onAction="#loadLowStockItems"
+                            prefWidth="180"
+                            prefHeight="38"
+                            focusTraversable="true"
+                            style="-fx-font-size: 13px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #c76b7d;
+                                   -fx-text-fill: #1f1f1f;
+                                   -fx-background-radius: 8;"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

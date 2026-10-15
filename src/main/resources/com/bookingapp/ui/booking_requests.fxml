@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.bookingapp.ui.BookingRequestController"
+            fitToWidth="false"
+            pannable="true"
+            hbarPolicy="AS_NEEDED"
+            vbarPolicy="AS_NEEDED"
+            style="-fx-background: #f8f4f6;
+                   -fx-background-color: #f8f4f6;
+                   -fx-control-inner-background: #f8f4f6;">
+
+       <content>
+              <!-- Main page layout. -->
+              <VBox alignment="TOP_CENTER"
+                    spacing="20"
+                    prefWidth="2500"
+                    minWidth="2500"
+                    minHeight="950"
+                    style="-fx-background-color:
+                           linear-gradient(to bottom, #f8f4f6, #f3ece7);">
+
+                     <padding>
+                            <Insets top="24" right="24" bottom="24" left="24"/>
+                     </padding>
+
+                     <!-- Header card containing the centred screen title, shortcut help and navigation button. -->
+                     <HBox alignment="CENTER"
+                           spacing="12"
+                           maxWidth="2450"
+                           prefWidth="2450"
+                           style="-fx-background-color: #ffffff;
+                                  -fx-background-radius: 18;
+                                  -fx-border-radius: 18;
+                                  -fx-border-color: #eadfe2;
+                                  -fx-padding: 18 22 18 22;">
+
+                            <!-- Left spacer used to balance the Keyboard Shortcuts and Back buttons on the right. -->
+                            <Region prefWidth="382"/>
+
+                            <!-- Screen title and short description centred in the header. -->
+                            <VBox alignment="CENTER"
+                                  spacing="4"
+                                  HBox.hgrow="ALWAYS">
+
+                                   <Label text="Booking Requests"
+                                          maxWidth="Infinity"
+                                          alignment="CENTER"
+                                          style="-fx-font-size: 28px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #2f2a2c;"/>
+
+                                   <Label text="Review requests, calculate deposits, record payments and confirm bookings"
+                                          maxWidth="Infinity"
+                                          alignment="CENTER"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #1f1f1f;"/>
+                            </VBox>
+
+                            <!-- Opens keyboard shortcut guidance for users who cannot easily use a mouse. -->
+                            <Button text="_Keyboard Shortcuts"
+                                    mnemonicParsing="true"
+                                    onAction="#showKeyboardShortcuts"
+                                    focusTraversable="true"
+                                    prefWidth="190"
+                                    style="-fx-background-color: #eee7e3;
+                                           -fx-text-fill: #1f1f1f;
+                                           -fx-background-radius: 10;
+                                           -fx-padding: 10 18 10 18;
+                                           -fx-font-weight: bold;
+                                           -fx-cursor: hand;"/>
+
+                            <!-- Returns the user to the main dashboard screen. -->
+                            <Button text="_Back to Dashboard"
+                                    mnemonicParsing="true"
+                                    onAction="#goBack"
+                                    focusTraversable="true"
+                                    prefWidth="180"
+                                    style="-fx-background-color: #6f8190;
+                                           -fx-text-fill: white;
+                                           -fx-background-radius: 10;
+                                           -fx-padding: 10 18 10 18;
+                                           -fx-font-weight: bold;
+                                           -fx-cursor: hand;"/>
+                     </HBox>
+
+                     <!-- Main booking request management card. -->
+                     <VBox spacing="16"
+                           maxWidth="2450"
+                           prefWidth="2450"
+                           style="-fx-background-color: #ffffff;
+                                  -fx-background-radius: 18;
+                                  -fx-border-radius: 18;
+                                  -fx-border-color: #eadfe2;
+                                  -fx-padding: 22;">
+
+                            <!-- Section heading and workflow explanation. -->
+                            <VBox spacing="5">
+                                   <Label text="Requests Awaiting Review or Deposit"
+                                          style="-fx-font-size: 24px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #b88fa1;"/>
+
+                                   <Label text="Set the final price, request the deposit, verify payment and then create the confirmed booking."
+                                          wrapText="true"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #1f1f1f;"/>
+                            </VBox>
+
+                            <!-- Search area used to filter the booking request table. -->
+                            <HBox alignment="CENTER_LEFT"
+                                  spacing="12"
+                                  style="-fx-background-color: #f8f4f6;
+                                         -fx-background-radius: 12;
+                                         -fx-border-radius: 12;
+                                         -fx-border-color: #eadfe2;
+                                         -fx-padding: 14;">
+
+                                   <Label text="Search requests:"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <!-- Search box controlled by BookingRequestController. -->
+                                   <TextField fx:id="searchField"
+                                              promptText="Search by customer, product, date, status, deposit status or payment reference..."
+                                              prefWidth="620"
+                                              focusTraversable="true"
+                                              style="-fx-prompt-text-fill: #1f1f1f;
+                                                     -fx-text-fill: #1f1f1f;
+                                                     -fx-font-size: 14px;"/>
+
+                                   <Label text="Search updates automatically as you type."
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #1f1f1f;"/>
+                            </HBox>
+
+                            <!-- Deposit calculation area. -->
+                            <HBox alignment="CENTER_LEFT"
+                                  spacing="12"
+                                  style="-fx-background-color: #f8f4f6;
+                                         -fx-background-radius: 12;
+                                         -fx-border-radius: 12;
+                                         -fx-border-color: #eadfe2;
+                                         -fx-padding: 14;">
+
+                                   <Label text="Final order total:"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <Label text="£"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <!-- Final price entered by staff before calculating the deposit. -->
+                                   <TextField fx:id="orderTotalField"
+                                              promptText="e.g. 175.00"
+                                              prefWidth="145"
+                                              disable="true"
+                                              onAction="#calculateAndSaveDeposit"
+                                              focusTraversable="true"
+                                              style="-fx-prompt-text-fill: #1f1f1f;
+                                                     -fx-text-fill: #1f1f1f;
+                                                     -fx-font-size: 14px;
+                                                     -fx-opacity: 1;"/>
+
+                                   <!-- Calculates and saves the required deposit for the selected request. -->
+                                   <Button fx:id="calculateDepositButton"
+                                           text="Ca_lculate and Save Deposit"
+                                           mnemonicParsing="true"
+                                           disable="true"
+                                           onAction="#calculateAndSaveDeposit"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #b88fa1;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 18 10 18;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+
+                                   <Region prefWidth="12"/>
+
+                                   <Label text="Required deposit:"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <!-- Shows the calculated deposit amount for the selected request. -->
+                                   <Label fx:id="requiredDepositLabel"
+                                          text="Not calculated"
+                                          style="-fx-font-size: 16px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #50a26b;"/>
+                            </HBox>
+
+                            <!-- Deposit payment recording area. -->
+                            <HBox alignment="CENTER_LEFT"
+                                  spacing="12"
+                                  style="-fx-background-color: #f8f4f6;
+                                         -fx-background-radius: 12;
+                                         -fx-border-radius: 12;
+                                         -fx-border-color: #eadfe2;
+                                         -fx-padding: 14;">
+
+                                   <Label text="Bank-transfer reference:"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <!-- Payment reference entered after the bank transfer has been checked. -->
+                                   <TextField fx:id="paymentReferenceField"
+                                              promptText="e.g. FJ-REQ-37"
+                                              prefWidth="240"
+                                              disable="true"
+                                              onAction="#markDepositPaid"
+                                              focusTraversable="true"
+                                              style="-fx-prompt-text-fill: #1f1f1f;
+                                                     -fx-text-fill: #1f1f1f;
+                                                     -fx-font-size: 14px;
+                                                     -fx-opacity: 1;"/>
+
+                                   <!-- Marks the selected request deposit as paid. -->
+                                   <Button fx:id="markDepositPaidButton"
+                                           text="_Mark Deposit as Paid"
+                                           mnemonicParsing="true"
+                                           disable="true"
+                                           onAction="#markDepositPaid"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #4d8f68;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 18 10 18;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+
+                                   <Label text="Verify the transfer in the business bank account before recording it."
+                                          wrapText="true"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #1f1f1f;"/>
+                            </HBox>
+
+                            <!-- Table showing website booking requests that need action. -->
+                            <TableView fx:id="bookingRequestTable"
+                                       prefHeight="560"
+                                       prefWidth="2400"
+                                       minWidth="2400"
+                                       focusTraversable="true"
+                                       style="-fx-background-radius: 12;
+                                              -fx-border-radius: 12;
+                                              -fx-border-color: #eadfe2;">
+
+                                   <placeholder>
+                                          <Label text="There are no booking requests awaiting review or deposit."
+                                                 style="-fx-font-size: 14px;
+                                                        -fx-text-fill: #1f1f1f;"/>
+                                   </placeholder>
+
+                                   <columns>
+                                          <!-- Internal request ID. -->
+                                          <TableColumn fx:id="requestIdColumn" text="ID" prefWidth="50" minWidth="50"/>
+
+                                          <!-- Customer full name. -->
+                                          <TableColumn fx:id="fullNameColumn" text="Full Name" prefWidth="140" minWidth="120"/>
+
+                                          <!-- Customer email address. -->
+                                          <TableColumn fx:id="emailColumn" text="Email" prefWidth="175" minWidth="150"/>
+
+                                          <!-- Customer phone number. -->
+                                          <TableColumn fx:id="phoneColumn" text="Phone" prefWidth="115" minWidth="100"/>
+
+                                          <!-- Services selected on the customer-facing website. -->
+                                          <TableColumn fx:id="serviceTypeColumn" text="Requested Services" prefWidth="190" minWidth="145"/>
+
+                                          <!-- Products and quantities selected by the customer. -->
+                                          <TableColumn fx:id="productQuantitiesColumn" text="Product Quantities" prefWidth="240" minWidth="190"/>
+
+                                          <!-- Collection or delivery choice. -->
+                                          <TableColumn fx:id="collectionOrDeliveryColumn" text="Fulfilment" prefWidth="100" minWidth="90"/>
+
+                                          <!-- Delivery address, if delivery was selected. -->
+                                          <TableColumn fx:id="dropoffAddressColumn" text="Delivery Address" prefWidth="180" minWidth="145"/>
+
+                                          <!-- Extra order details entered by the customer. -->
+                                          <TableColumn fx:id="itemsRequiredColumn" text="Additional Details" prefWidth="210" minWidth="160"/>
+
+                                          <!-- Requested event date. -->
+                                          <TableColumn fx:id="eventDateColumn" text="Event Date" prefWidth="95" minWidth="90"/>
+
+                                          <!-- Requested event time. -->
+                                          <TableColumn fx:id="eventTimeColumn" text="Time" prefWidth="70" minWidth="65"/>
+
+                                          <!-- Final order total recorded by staff. -->
+                                          <TableColumn fx:id="orderTotalColumn" text="Order Total" prefWidth="100" minWidth="90"/>
+
+                                          <!-- Required deposit amount. -->
+                                          <TableColumn fx:id="requiredDepositColumn" text="Deposit" prefWidth="85" minWidth="80"/>
+
+                                          <!-- Current deposit status. -->
+                                          <TableColumn fx:id="depositStatusColumn" text="Deposit Status" prefWidth="115" minWidth="105"/>
+
+                                          <!-- Date the deposit was recorded as paid. -->
+                                          <TableColumn fx:id="depositPaidDateColumn" text="Paid Date" prefWidth="135" minWidth="120"/>
+
+                                          <!-- Bank-transfer reference entered by staff. -->
+                                          <TableColumn fx:id="paymentReferenceColumn" text="Payment Reference" prefWidth="145" minWidth="125"/>
+
+                                          <!-- Current request workflow status. -->
+                                          <TableColumn fx:id="statusColumn" text="Request Status" prefWidth="145" minWidth="125"/>
+                                   </columns>
+                            </TableView>
+
+                            <!-- Action buttons for the selected booking request. -->
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+
+                                   <!-- Moves a pending request into the deposit request stage. -->
+                                   <Button fx:id="provisionallyAcceptButton"
+                                           text="_Provisionally Accept"
+                                           mnemonicParsing="true"
+                                           disable="true"
+                                           onAction="#acceptSelectedRequest"
+                                           prefWidth="150"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #50a26b;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 18 10 18;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+
+                                   <!-- Creates a confirmed booking from a paid website request. -->
+                                   <Button fx:id="confirmBookingButton"
+                                           text="_Confirm Booking"
+                                           mnemonicParsing="true"
+                                           disable="true"
+                                           onAction="#confirmSelectedBooking"
+                                           prefWidth="140"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #6a5acd;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 18 10 18;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+
+                                   <!-- Rejects the selected request and records a rejection reason. -->
+                                   <Button fx:id="rejectRequestButton"
+                                           text="Re_ject Request"
+                                           mnemonicParsing="true"
+                                           disable="true"
+                                           onAction="#rejectSelectedRequest"
+                                           prefWidth="130"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #c35656;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 18 10 18;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+
+                                   <!-- Edits an unpaid and unconfirmed website booking request. -->
+                                   <Button fx:id="editRequestButton"
+                                           text="_Edit Request"
+                                           mnemonicParsing="true"
+                                           disable="true"
+                                           onAction="#editSelectedRequest"
+                                           prefWidth="115"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #b88fa1;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 18 10 18;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+
+                                   <!-- Deletes an unpaid and unconfirmed website booking request. -->
+                                   <Button fx:id="deleteRequestButton"
+                                           text="_Delete Request"
+                                           mnemonicParsing="true"
+                                           disable="true"
+                                           onAction="#deleteSelectedRequest"
+                                           prefWidth="125"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #8f4d4d;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 18 10 18;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+
+                                   <!-- Reloads the current booking request table. -->
+                                   <Button text="_Refresh"
+                                           mnemonicParsing="true"
+                                           onAction="#loadBookingRequests"
+                                           prefWidth="95"
+                                           focusTraversable="true"
+                                           style="-fx-background-color: #6f8190;
+                                                  -fx-text-fill: white;
+                                                  -fx-background-radius: 10;
+                                                  -fx-padding: 10 18 10 18;
+                                                  -fx-font-weight: bold;
+                                                  -fx-cursor: hand;"/>
+
+                                   <Region HBox.hgrow="ALWAYS"/>
+
+                                   <!-- Short note explaining what the Confirm Booking button does. -->
+                                   <Label text="Confirm Booking creates the booking and deducts its inventory using FIFO."
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #1f1f1f;"/>
+                            </HBox>
+                     </VBox>
+              </VBox>
+       </content>
+</ScrollPane>

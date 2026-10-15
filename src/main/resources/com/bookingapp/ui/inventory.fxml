@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    Inventory screen.
+
+    This screen allows staff to add inventory items, record unit conversion
+    details, monitor current stock levels, identify low-stock items, search
+    inventory records and delete selected inventory items.
+-->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.bookingapp.ui.InventoryController"
+            fitToWidth="true"
+            fitToHeight="true"
+            pannable="true"
+            hbarPolicy="AS_NEEDED"
+            vbarPolicy="AS_NEEDED"
+            style="-fx-background: #f8f4f6;
+                   -fx-background-color: #f8f4f6;
+                   -fx-control-inner-background: #f8f4f6;">
+
+    <content>
+        <!-- Main page layout. -->
+        <VBox spacing="24"
+              alignment="TOP_CENTER"
+              prefWidth="1600"
+              minHeight="1000"
+              style="-fx-background-color:
+                     linear-gradient(to bottom, #f8f4f6, #f3ece7);">
+
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+
+            <!-- Header card containing shortcut help, centred page title and navigation button. -->
+            <HBox alignment="CENTER"
+                  spacing="24"
+                  maxWidth="1450"
+                  prefWidth="1450"
+                  minHeight="130"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 18;
+                         -fx-border-radius: 18;
+                         -fx-border-color: #eadfe2;
+                         -fx-padding: 22 24 22 24;">
+
+                <!-- Left spacer used to balance the Keyboard Shortcuts and Back buttons on the right. -->
+                <Region prefWidth="430"
+                        minWidth="430"/>
+
+                <!-- Page title and short description. -->
+                <VBox alignment="CENTER"
+                      spacing="6"
+                      HBox.hgrow="ALWAYS">
+
+                    <Label text="Inventory"
+                           maxWidth="Infinity"
+                           alignment="CENTER"
+                           style="-fx-font-size: 30px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #2f2a2c;"/>
+
+                    <Label text="Add inventory items, monitor stock levels and identify low-stock items."
+                           wrapText="true"
+                           maxWidth="Infinity"
+                           alignment="CENTER"
+                           style="-fx-font-size: 16px;
+                                  -fx-text-fill: #1f1f1f;"/>
+                </VBox>
+
+                <!-- Right-side button area balances the spacer on the left. -->
+                <HBox alignment="CENTER_RIGHT"
+                      spacing="12"
+                      prefWidth="430"
+                      minWidth="430">
+
+                    <!-- Opens keyboard shortcut guidance for users who cannot easily use a mouse. -->
+                    <Button text="_Keyboard Shortcuts (Alt+K)"
+                            mnemonicParsing="true"
+                            onAction="#showKeyboardShortcuts"
+                            prefWidth="220"
+                            prefHeight="46"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #eee7e3;
+                                   -fx-text-fill: #1f1f1f;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+
+                    <!-- Returns the user to the main dashboard screen. -->
+                    <Button text="_Back to Dashboard"
+                            mnemonicParsing="true"
+                            onAction="#goBack"
+                            prefWidth="190"
+                            prefHeight="46"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #6f8190;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+                </HBox>
+            </HBox>
+
+            <!-- Warning label used to show low-stock messages or validation feedback. -->
+            <Label fx:id="warningLabel"
+                   text=""
+                   maxWidth="1450"
+                   style="-fx-font-size: 14px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #a94442;"/>
+
+            <!-- Main content area containing the add form and inventory table. -->
+            <HBox spacing="24"
+                  alignment="TOP_CENTER"
+                  maxWidth="1450"
+                  prefWidth="1450">
+
+                <!-- Add inventory item form card. -->
+                <VBox spacing="14"
+                      prefWidth="360"
+                      minWidth="360"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-padding: 22;
+                             -fx-border-color: #eadfe2;
+                             -fx-border-radius: 18;">
+
+                    <Label text="Add Inventory Item"
+                           style="-fx-font-size: 22px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #b88fa1;"/>
+
+                    <!-- Inventory item name field. -->
+                    <TextField fx:id="nameField"
+                               promptText="Item name"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Base unit used to store the main inventory quantity. -->
+                    <TextField fx:id="unitField"
+                               promptText="Base unit (e.g. grams, ml, pieces)"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Unit used when the item is purchased from a supplier. -->
+                    <TextField fx:id="purchaseUnitField"
+                               promptText="Purchase unit (e.g. bag, box, bottle)"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Unit used when the item is consumed by recipe items. -->
+                    <TextField fx:id="recipeUnitField"
+                               promptText="Recipe unit (e.g. grams, ml, pieces)"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Conversion factor between the purchase unit and recipe/base unit. -->
+                    <TextField fx:id="conversionFactorField"
+                               promptText="Conversion factor (e.g. 1000)"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Current stock quantity held in the recipe/base unit. -->
+                    <TextField fx:id="quantityField"
+                               promptText="Current quantity in recipe/base unit"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Minimum quantity before the item is treated as low stock. -->
+                    <TextField fx:id="reorderLevelField"
+                               promptText="Re-order level"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Optional supplier ID used to link the item to a preferred supplier. -->
+                    <TextField fx:id="preferredSupplierIdField"
+                               promptText="Preferred supplier ID (optional)"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Optional default cost used for stock and purchase calculations. -->
+                    <TextField fx:id="defaultUnitCostField"
+                               promptText="Default unit cost (optional)"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Optional quantity normally ordered when stock needs replacing. -->
+                    <TextField fx:id="reorderQuantityField"
+                               promptText="Re-order quantity (optional)"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Adds a new inventory item using the form values. -->
+                    <Button text="_Add Inventory Item"
+                            mnemonicParsing="true"
+                            onAction="#addInventoryItem"
+                            prefHeight="42"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #b88fa1;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+
+                    <!-- Clears the inventory item form. -->
+                    <Button text="_Clear Form"
+                            mnemonicParsing="true"
+                            onAction="#clearFields"
+                            prefHeight="40"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-background-color: #eee7e3;
+                                   -fx-text-fill: #1f1f1f;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+                </VBox>
+
+                <!-- Inventory list card. -->
+                <VBox spacing="16"
+                      HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-padding: 22;
+                             -fx-border-color: #eadfe2;
+                             -fx-border-radius: 18;">
+
+                    <Label text="Inventory List"
+                           style="-fx-font-size: 24px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #50a26b;"/>
+
+                    <!-- Search area used to filter the inventory table. -->
+                    <HBox alignment="CENTER_LEFT"
+                          spacing="12"
+                          style="-fx-background-color: #f8f4f6;
+                                 -fx-background-radius: 12;
+                                 -fx-border-color: #eadfe2;
+                                 -fx-border-radius: 12;
+                                 -fx-padding: 14;">
+
+                        <Label text="Search:"
+                               style="-fx-font-size: 14px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Search box controlled by InventoryController. -->
+                        <TextField fx:id="searchField"
+                                   promptText="Search by item name, unit, purchase unit, recipe unit, supplier ID, stock level or low stock..."
+                                   prefWidth="760"
+                                   focusTraversable="true"
+                                   style="-fx-prompt-text-fill: #1f1f1f;
+                                          -fx-text-fill: #1f1f1f;
+                                          -fx-font-size: 14px;"/>
+                    </HBox>
+
+                    <!-- Table showing all inventory items and stock-control details. -->
+                    <TableView fx:id="inventoryTable"
+                               prefHeight="520"
+                               VBox.vgrow="ALWAYS"
+                               focusTraversable="true"
+                               style="-fx-background-radius: 12;
+                                      -fx-border-radius: 12;
+                                      -fx-border-color: #eadfe2;">
+
+                        <columns>
+                            <!-- Internal inventory item ID. -->
+                            <TableColumn fx:id="idColumn"
+                                         text="ID"
+                                         prefWidth="60"/>
+
+                            <!-- Inventory item name. -->
+                            <TableColumn fx:id="nameColumn"
+                                         text="Name"
+                                         prefWidth="170"/>
+
+                            <!-- Main unit used for stock storage. -->
+                            <TableColumn fx:id="unitColumn"
+                                         text="Base Unit"
+                                         prefWidth="90"/>
+
+                            <!-- Unit used when purchasing the item. -->
+                            <TableColumn fx:id="purchaseUnitColumn"
+                                         text="Purchase Unit"
+                                         prefWidth="110"/>
+
+                            <!-- Unit used when recipes consume the item. -->
+                            <TableColumn fx:id="recipeUnitColumn"
+                                         text="Recipe Unit"
+                                         prefWidth="100"/>
+
+                            <!-- Conversion value between purchase and recipe/base units. -->
+                            <TableColumn fx:id="conversionFactorColumn"
+                                         text="Conversion Factor"
+                                         prefWidth="130"/>
+
+                            <!-- Current quantity held in stock. -->
+                            <TableColumn fx:id="quantityColumn"
+                                         text="Current Quantity"
+                                         prefWidth="130"/>
+
+                            <!-- Quantity level used to trigger low-stock warnings. -->
+                            <TableColumn fx:id="reorderColumn"
+                                         text="Re-order Level"
+                                         prefWidth="120"/>
+
+                            <!-- Preferred supplier ID for the item. -->
+                            <TableColumn fx:id="supplierColumn"
+                                         text="Supplier ID"
+                                         prefWidth="100"/>
+
+                            <!-- Default unit cost for the item. -->
+                            <TableColumn fx:id="defaultCostColumn"
+                                         text="Default Unit Cost"
+                                         prefWidth="130"/>
+
+                            <!-- Normal quantity to purchase when re-ordering. -->
+                            <TableColumn fx:id="reorderQuantityColumn"
+                                         text="Re-order Quantity"
+                                         prefWidth="130"/>
+                        </columns>
+                    </TableView>
+
+                    <!-- Inventory table action buttons. -->
+                    <HBox spacing="12">
+                        <!-- Filters the table to show only low-stock items. -->
+                        <Button text="_Low Stock Only"
+                                mnemonicParsing="true"
+                                onAction="#loadLowStockItems"
+                                prefWidth="140"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #d49b4e;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+
+                        <!-- Deletes the selected inventory item. -->
+                        <Button text="_Delete Selected"
+                                mnemonicParsing="true"
+                                onAction="#deleteSelectedInventoryItem"
+                                prefWidth="150"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #c35656;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+
+                        <!-- Reloads all inventory items. -->
+                        <Button text="_Refresh"
+                                mnemonicParsing="true"
+                                onAction="#loadInventoryItems"
+                                prefWidth="110"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #50a26b;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <!-- Returns the user to the main dashboard screen. This button does not use
+                             Alt+B because the header Back button already owns that shortcut. -->
+                        <Button text="Back to Dashboard"
+                                mnemonicParsing="false"
+                                onAction="#goBack"
+                                prefWidth="180"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #6f8190;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

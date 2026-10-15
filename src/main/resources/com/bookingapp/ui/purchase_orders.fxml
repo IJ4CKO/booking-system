@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    Purchase orders screen.
+
+    This screen allows staff to create supplier purchase orders, add inventory
+    items to an order, update order lines, receive stock into inventory batches
+    and manage purchase order statuses.
+-->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.bookingapp.ui.PurchaseOrderController"
+            fitToWidth="true"
+            pannable="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            style="-fx-background: #f8f4f6;
+                   -fx-background-color: #f8f4f6;
+                   -fx-control-inner-background: #f8f4f6;">
+
+    <content>
+        <!-- Main page layout. -->
+        <VBox spacing="24"
+              alignment="TOP_CENTER"
+              prefWidth="1600"
+              minHeight="1250"
+              style="-fx-background-color:
+                     linear-gradient(to bottom, #f8f4f6, #f3ece7);">
+
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+
+            <!-- Header card containing shortcut help, screen title and navigation buttons. -->
+            <HBox alignment="CENTER"
+                  spacing="24"
+                  maxWidth="1450"
+                  prefWidth="1450"
+                  minHeight="130"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 18;
+                         -fx-border-radius: 18;
+                         -fx-border-color: #eadfe2;
+                         -fx-padding: 22 24 22 24;">
+
+                <!-- Left spacer used to balance the buttons on the right. -->
+                <Region prefWidth="560"
+                        minWidth="560"/>
+
+                <!-- Screen title and short description centred in the header. -->
+                <VBox alignment="CENTER"
+                      spacing="6"
+                      HBox.hgrow="ALWAYS">
+
+                    <Label text="Purchase Orders"
+                           maxWidth="Infinity"
+                           alignment="CENTER"
+                           style="-fx-font-size: 30px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #2f2a2c;"/>
+
+                    <Label text="Create supplier orders, add order items and receive delivered stock into inventory batches."
+                           wrapText="true"
+                           maxWidth="Infinity"
+                           alignment="CENTER"
+                           style="-fx-font-size: 16px;
+                                  -fx-text-fill: #1f1f1f;"/>
+                </VBox>
+
+                <!-- Right-side buttons. This balances the spacer on the left. -->
+                <HBox alignment="CENTER_RIGHT"
+                      spacing="10"
+                      prefWidth="560"
+                      minWidth="560">
+
+                    <!-- Opens keyboard shortcut guidance for users who cannot easily use a mouse. -->
+                    <Button text="_Keyboard Shortcuts (Alt+K)"
+                            mnemonicParsing="true"
+                            onAction="#showKeyboardShortcuts"
+                            prefWidth="220"
+                            prefHeight="46"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #eee7e3;
+                                   -fx-text-fill: #1f1f1f;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+
+                    <!-- Reloads the purchase order table. -->
+                    <Button text="_Refresh"
+                            mnemonicParsing="true"
+                            onAction="#loadPurchaseOrders"
+                            prefWidth="120"
+                            prefHeight="46"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #50a26b;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+
+                    <!-- Returns the user to the main dashboard screen. -->
+                    <Button text="_Back to Dashboard"
+                            mnemonicParsing="true"
+                            onAction="#goBack"
+                            prefWidth="190"
+                            prefHeight="46"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #6f8190;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+                </HBox>
+            </HBox>
+
+            <!-- Top section containing the order form and existing order table. -->
+            <HBox spacing="24"
+                  alignment="TOP_CENTER"
+                  maxWidth="1450"
+                  prefWidth="1450">
+
+                <!-- Purchase order detail form card. -->
+                <VBox spacing="14"
+                      prefWidth="370"
+                      minWidth="370"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-border-color: #eadfe2;
+                             -fx-border-radius: 18;
+                             -fx-padding: 22;">
+
+                    <!-- Shows whether the user is creating a new order or editing an existing one. -->
+                    <Label fx:id="currentOrderLabel"
+                           text="New Purchase Order"
+                           style="-fx-font-size: 22px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #b88fa1;"/>
+
+                    <!-- Displays the current status of the selected purchase order. -->
+                    <HBox alignment="CENTER_LEFT"
+                          spacing="8">
+
+                        <Label text="Status:"
+                               style="-fx-font-size: 14px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <Label fx:id="orderStatusLabel"
+                               text="DRAFT"
+                               style="-fx-font-size: 14px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #50a26b;"/>
+                    </HBox>
+
+                    <!-- Supplier linked to the purchase order. -->
+                    <Label text="Supplier"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <ComboBox fx:id="supplierComboBox"
+                              promptText="Select supplier"
+                              editable="false"
+                              prefWidth="330"
+                              prefHeight="42"
+                              focusTraversable="true"
+                              style="-fx-prompt-text-fill: #1f1f1f;
+                                     -fx-text-fill: #1f1f1f;
+                                     -fx-font-size: 14px;"/>
+
+                    <!-- Date the order was created. -->
+                    <Label text="Order Date"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <DatePicker fx:id="orderDatePicker"
+                                promptText="Select order date"
+                                prefWidth="330"
+                                prefHeight="42"
+                                focusTraversable="true"
+                                style="-fx-prompt-text-fill: #1f1f1f;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-font-size: 14px;"/>
+
+                    <!-- Optional expected delivery date for the purchase order. -->
+                    <Label text="Expected Delivery Date"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <DatePicker fx:id="expectedDeliveryDatePicker"
+                                promptText="Optional delivery date"
+                                prefWidth="330"
+                                prefHeight="42"
+                                focusTraversable="true"
+                                style="-fx-prompt-text-fill: #1f1f1f;
+                                       -fx-text-fill: #1f1f1f;
+                                       -fx-font-size: 14px;"/>
+
+                    <!-- Optional notes for the supplier order. -->
+                    <Label text="Notes"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <TextArea fx:id="notesArea"
+                              promptText="Optional notes about the order"
+                              wrapText="true"
+                              prefWidth="330"
+                              prefHeight="120"
+                              focusTraversable="true"
+                              style="-fx-prompt-text-fill: #1f1f1f;
+                                     -fx-text-fill: #1f1f1f;
+                                     -fx-font-size: 14px;"/>
+
+                    <!-- Saves the order as a draft or updates the current draft order. -->
+                    <Button fx:id="saveOrderButton"
+                            text="_Save Draft Order"
+                            mnemonicParsing="true"
+                            onAction="#savePurchaseOrder"
+                            prefWidth="330"
+                            prefHeight="42"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #b88fa1;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+
+                    <!-- Clears the order form ready for a new purchase order. -->
+                    <Button text="_New Purchase Order"
+                            mnemonicParsing="true"
+                            onAction="#clearOrderForm"
+                            prefWidth="330"
+                            prefHeight="40"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-background-color: #eee7e3;
+                                   -fx-text-fill: #1f1f1f;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+                </VBox>
+
+                <!-- Existing purchase orders table card. -->
+                <VBox spacing="16"
+                      HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-border-color: #eadfe2;
+                             -fx-border-radius: 18;
+                             -fx-padding: 22;">
+
+                    <!-- Existing purchase order heading and explanation. -->
+                    <HBox alignment="CENTER_LEFT"
+                          spacing="10">
+
+                        <VBox spacing="4">
+                            <Label text="Existing Purchase Orders"
+                                   style="-fx-font-size: 24px;
+                                          -fx-font-weight: bold;
+                                          -fx-text-fill: #2f2a2c;"/>
+
+                            <Label text="Select an order to view its items or change its status."
+                                   wrapText="true"
+                                   style="-fx-font-size: 14px;
+                                          -fx-text-fill: #1f1f1f;"/>
+                        </VBox>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+                    </HBox>
+
+                    <!-- Search area used to filter purchase orders. -->
+                    <HBox alignment="CENTER_LEFT"
+                          spacing="12"
+                          style="-fx-background-color: #f8f4f6;
+                                 -fx-background-radius: 12;
+                                 -fx-border-color: #eadfe2;
+                                 -fx-border-radius: 12;
+                                 -fx-padding: 14;">
+
+                        <Label text="Search:"
+                               style="-fx-font-size: 14px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Search box controlled by PurchaseOrderController. -->
+                        <TextField fx:id="searchField"
+                                   promptText="Search by supplier, order ID, date, status, total cost or notes..."
+                                   prefWidth="650"
+                                   focusTraversable="true"
+                                   style="-fx-prompt-text-fill: #1f1f1f;
+                                          -fx-text-fill: #1f1f1f;
+                                          -fx-font-size: 14px;"/>
+                    </HBox>
+
+                    <!-- Table showing existing purchase orders. -->
+                    <TableView fx:id="purchaseOrderTable"
+                               prefHeight="400"
+                               VBox.vgrow="ALWAYS"
+                               focusTraversable="true"
+                               style="-fx-background-color: white;
+                                      -fx-border-color: #eadfe2;
+                                      -fx-border-radius: 12;
+                                      -fx-background-radius: 12;">
+
+                        <columns>
+                            <!-- Internal purchase order ID. -->
+                            <TableColumn fx:id="orderIdColumn"
+                                         text="Order ID"
+                                         prefWidth="80"/>
+
+                            <!-- Supplier linked to the order. -->
+                            <TableColumn fx:id="orderSupplierColumn"
+                                         text="Supplier"
+                                         prefWidth="180"/>
+
+                            <!-- Date the order was created. -->
+                            <TableColumn fx:id="orderDateColumn"
+                                         text="Order Date"
+                                         prefWidth="110"/>
+
+                            <!-- Expected delivery date, if recorded. -->
+                            <TableColumn fx:id="expectedDeliveryColumn"
+                                         text="Expected Delivery"
+                                         prefWidth="135"/>
+
+                            <!-- Current order status. -->
+                            <TableColumn fx:id="statusColumn"
+                                         text="Status"
+                                         prefWidth="100"/>
+
+                            <!-- Total cost of the purchase order. -->
+                            <TableColumn fx:id="totalCostColumn"
+                                         text="Total Cost"
+                                         prefWidth="105"/>
+                        </columns>
+                    </TableView>
+
+                    <!-- Purchase order status and deletion buttons. -->
+                    <HBox spacing="12"
+                          alignment="CENTER_LEFT">
+
+                        <!-- Changes the selected draft order to ordered. -->
+                        <Button fx:id="markOrderedButton"
+                                text="_Mark as Ordered"
+                                mnemonicParsing="true"
+                                onAction="#markPurchaseOrderAsOrdered"
+                                prefWidth="150"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #6f8190;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+
+                        <!-- Receives the selected order and adds stock into inventory batches. -->
+                        <Button fx:id="receiveOrderButton"
+                                text="Recei_ve Order"
+                                mnemonicParsing="true"
+                                onAction="#receivePurchaseOrder"
+                                prefWidth="140"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #50a26b;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+
+                        <!-- Cancels the selected purchase order. -->
+                        <Button fx:id="cancelOrderButton"
+                                text="_Cancel Order"
+                                mnemonicParsing="true"
+                                onAction="#cancelPurchaseOrder"
+                                prefWidth="130"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #d49b4e;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+
+                        <!-- Deletes the selected purchase order where allowed by the controller. -->
+                        <Button fx:id="deleteOrderButton"
+                                text="_Delete Order"
+                                mnemonicParsing="true"
+                                onAction="#deletePurchaseOrder"
+                                prefWidth="130"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #c35656;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+
+            <!-- Bottom section containing order line form and current order line table. -->
+            <HBox spacing="24"
+                  alignment="TOP_CENTER"
+                  maxWidth="1450"
+                  prefWidth="1450">
+
+                <!-- Purchase order item form card. -->
+                <VBox spacing="14"
+                      prefWidth="370"
+                      minWidth="370"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-border-color: #eadfe2;
+                             -fx-border-radius: 18;
+                             -fx-padding: 22;">
+
+                    <Label text="Purchase Order Item"
+                           style="-fx-font-size: 22px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #b88fa1;"/>
+
+                    <Label text="Add ingredients or supplies to the current order."
+                           wrapText="true"
+                           style="-fx-font-size: 14px;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <!-- Inventory item being ordered. -->
+                    <Label text="Inventory Item"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <ComboBox fx:id="inventoryItemComboBox"
+                              promptText="Select inventory item"
+                              editable="false"
+                              prefWidth="330"
+                              prefHeight="42"
+                              focusTraversable="true"
+                              style="-fx-prompt-text-fill: #1f1f1f;
+                                     -fx-text-fill: #1f1f1f;
+                                     -fx-font-size: 14px;"/>
+
+                    <!-- Quantity of the selected item being ordered. -->
+                    <Label text="Quantity Ordered"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <TextField fx:id="quantityOrderedField"
+                               promptText="For example: 10"
+                               prefWidth="330"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Unit cost for the selected inventory item. -->
+                    <Label text="Unit Cost (£)"
+                           style="-fx-font-size: 14px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1f1f1f;"/>
+
+                    <TextField fx:id="unitCostField"
+                               promptText="For example: 1.25"
+                               prefWidth="330"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Adds the entered item to the current purchase order. -->
+                    <Button fx:id="addLineButton"
+                            text="Add Item to _Order"
+                            mnemonicParsing="true"
+                            onAction="#addOrderLine"
+                            prefWidth="330"
+                            prefHeight="42"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #b88fa1;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+
+                    <!-- Updates the selected order line using the form values. -->
+                    <Button fx:id="updateLineButton"
+                            text="_Update Selected Item"
+                            mnemonicParsing="true"
+                            onAction="#updateSelectedOrderLine"
+                            prefWidth="330"
+                            prefHeight="40"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #6f8190;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+
+                    <!-- Removes the selected item from the current purchase order. -->
+                    <Button fx:id="removeLineButton"
+                            text="Remove Selected _Item"
+                            mnemonicParsing="true"
+                            onAction="#removeSelectedOrderLine"
+                            prefWidth="330"
+                            prefHeight="40"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #c35656;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+
+                    <!-- Clears the purchase order item form. -->
+                    <Button text="C_lear Item Form"
+                            mnemonicParsing="true"
+                            onAction="#clearLineForm"
+                            prefWidth="330"
+                            prefHeight="40"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-background-color: #eee7e3;
+                                   -fx-text-fill: #1f1f1f;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+                </VBox>
+
+                <!-- Current purchase order line table card. -->
+                <VBox spacing="16"
+                      HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-border-color: #eadfe2;
+                             -fx-border-radius: 18;
+                             -fx-padding: 22;">
+
+                    <!-- Current order line heading and total. -->
+                    <HBox alignment="CENTER_LEFT"
+                          spacing="10">
+
+                        <VBox spacing="4">
+                            <Label text="Items in Current Purchase Order"
+                                   style="-fx-font-size: 24px;
+                                          -fx-font-weight: bold;
+                                          -fx-text-fill: #2f2a2c;"/>
+
+                            <Label text="The order total is calculated from the quantities and unit costs."
+                                   wrapText="true"
+                                   style="-fx-font-size: 14px;
+                                          -fx-text-fill: #1f1f1f;"/>
+                        </VBox>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <!-- Shows the calculated total for the current purchase order. -->
+                        <Label fx:id="orderTotalLabel"
+                               text="Order total: £0.00"
+                               style="-fx-font-size: 16px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #50a26b;"/>
+                    </HBox>
+
+                    <!-- Table showing items currently added to the selected purchase order. -->
+                    <TableView fx:id="orderLineTable"
+                               prefHeight="390"
+                               VBox.vgrow="ALWAYS"
+                               focusTraversable="true"
+                               style="-fx-background-color: white;
+                                      -fx-border-color: #eadfe2;
+                                      -fx-border-radius: 12;
+                                      -fx-background-radius: 12;">
+
+                        <columns>
+                            <!-- Inventory item included in the order. -->
+                            <TableColumn fx:id="lineInventoryItemColumn"
+                                         text="Inventory Item"
+                                         prefWidth="280"/>
+
+                            <!-- Quantity ordered for the line item. -->
+                            <TableColumn fx:id="lineQuantityColumn"
+                                         text="Quantity"
+                                         prefWidth="120"/>
+
+                            <!-- Unit cost for the line item. -->
+                            <TableColumn fx:id="lineUnitCostColumn"
+                                         text="Unit Cost"
+                                         prefWidth="120"/>
+
+                            <!-- Quantity multiplied by unit cost. -->
+                            <TableColumn fx:id="lineTotalColumn"
+                                         text="Line Total"
+                                         prefWidth="130"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    Customers screen.
+
+    This screen allows staff to add new customers, search existing customer
+    records, refresh the customer list and delete selected customer records.
+-->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.bookingapp.ui.CustomerController"
+            fitToWidth="true"
+            fitToHeight="true"
+            pannable="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            style="-fx-background: #f8f4f6;
+                   -fx-background-color: #f8f4f6;
+                   -fx-control-inner-background: #f8f4f6;">
+
+    <content>
+        <!-- Main page layout. -->
+        <VBox spacing="24"
+              alignment="TOP_CENTER"
+              prefWidth="1600"
+              minHeight="1000"
+              style="-fx-background-color:
+                     linear-gradient(to bottom, #f8f4f6, #f3ece7);">
+
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+
+            <!-- Header card containing shortcut help, centred page title and navigation button. -->
+            <HBox alignment="CENTER"
+                  spacing="24"
+                  maxWidth="1450"
+                  prefWidth="1450"
+                  minHeight="130"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 18;
+                         -fx-border-radius: 18;
+                         -fx-border-color: #eadfe2;
+                         -fx-padding: 22 24 22 24;">
+
+                <!-- Left spacer used to balance the Keyboard Shortcuts and Back buttons on the right. -->
+                <Region prefWidth="430"
+                        minWidth="430"/>
+
+                <!-- Page title and short description. -->
+                <VBox alignment="CENTER"
+                      spacing="6"
+                      HBox.hgrow="ALWAYS">
+
+                    <Label text="Customers"
+                           maxWidth="Infinity"
+                           alignment="CENTER"
+                           style="-fx-font-size: 30px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #2f2a2c;"/>
+
+                    <Label text="Add, search, refresh and delete customer records."
+                           wrapText="true"
+                           maxWidth="Infinity"
+                           alignment="CENTER"
+                           style="-fx-font-size: 16px;
+                                  -fx-text-fill: #1f1f1f;"/>
+                </VBox>
+
+                <!-- Right-side button area balances the spacer on the left. -->
+                <HBox alignment="CENTER_RIGHT"
+                      spacing="12"
+                      prefWidth="430"
+                      minWidth="430">
+
+                    <!-- Opens keyboard shortcut guidance for users who cannot easily use a mouse. -->
+                    <Button text="_Keyboard Shortcuts (Alt+K)"
+                            mnemonicParsing="true"
+                            onAction="#showKeyboardShortcuts"
+                            prefWidth="220"
+                            prefHeight="46"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #eee7e3;
+                                   -fx-text-fill: #1f1f1f;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+
+                    <!-- Returns the user to the main dashboard screen. -->
+                    <Button text="_Back to Dashboard"
+                            mnemonicParsing="true"
+                            onAction="#goBack"
+                            prefWidth="190"
+                            prefHeight="46"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #6f8190;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+                </HBox>
+            </HBox>
+
+            <!-- Main content area containing the add form and customer table. -->
+            <HBox spacing="24"
+                  alignment="TOP_CENTER"
+                  maxWidth="1450"
+                  prefWidth="1450">
+
+                <!-- Add customer form card. -->
+                <VBox spacing="14"
+                      prefWidth="360"
+                      minWidth="360"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-padding: 22;
+                             -fx-border-color: #eadfe2;
+                             -fx-border-radius: 18;">
+
+                    <Label text="Add Customer"
+                           style="-fx-font-size: 22px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #b88fa1;"/>
+
+                    <!-- Customer full name field. -->
+                    <TextField fx:id="fullNameField"
+                               promptText="Full name"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Customer telephone number field. -->
+                    <TextField fx:id="phoneField"
+                               promptText="Phone number"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Customer email address field. -->
+                    <TextField fx:id="emailField"
+                               promptText="Email address"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Adds the customer using the details entered above. -->
+                    <Button text="_Add Customer"
+                            mnemonicParsing="true"
+                            onAction="#addCustomer"
+                            prefHeight="42"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #b88fa1;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+                </VBox>
+
+                <!-- Customer list card. -->
+                <VBox spacing="16"
+                      HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-padding: 22;
+                             -fx-border-color: #eadfe2;
+                             -fx-border-radius: 18;">
+
+                    <Label text="Customer List"
+                           style="-fx-font-size: 24px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #50a26b;"/>
+
+                    <!-- Search area used to filter the customer table. -->
+                    <HBox alignment="CENTER_LEFT"
+                          spacing="12"
+                          style="-fx-background-color: #f8f4f6;
+                                 -fx-background-radius: 12;
+                                 -fx-border-color: #eadfe2;
+                                 -fx-border-radius: 12;
+                                 -fx-padding: 14;">
+
+                        <Label text="Search:"
+                               style="-fx-font-size: 14px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Search box controlled by CustomerController. -->
+                        <TextField fx:id="searchField"
+                                   promptText="Search by name, phone, email or ID..."
+                                   prefWidth="560"
+                                   focusTraversable="true"
+                                   style="-fx-prompt-text-fill: #1f1f1f;
+                                          -fx-text-fill: #1f1f1f;
+                                          -fx-font-size: 14px;"/>
+                    </HBox>
+
+                    <!-- Table showing customer records. -->
+                    <TableView fx:id="customerTable"
+                               prefHeight="500"
+                               VBox.vgrow="ALWAYS"
+                               focusTraversable="true"
+                               style="-fx-background-radius: 12;
+                                      -fx-border-radius: 12;
+                                      -fx-border-color: #eadfe2;">
+
+                        <columns>
+                            <!-- Internal customer ID. -->
+                            <TableColumn fx:id="idColumn"
+                                         text="ID"
+                                         prefWidth="70"/>
+
+                            <!-- Customer full name. -->
+                            <TableColumn fx:id="nameColumn"
+                                         text="Full Name"
+                                         prefWidth="240"/>
+
+                            <!-- Customer telephone number. -->
+                            <TableColumn fx:id="phoneColumn"
+                                         text="Phone"
+                                         prefWidth="200"/>
+
+                            <!-- Customer email address. -->
+                            <TableColumn fx:id="emailColumn"
+                                         text="Email"
+                                         prefWidth="320"/>
+                        </columns>
+                    </TableView>
+
+                    <!-- Customer table action buttons. -->
+                    <HBox spacing="12">
+
+                        <!-- Deletes the selected customer record. -->
+                        <Button text="_Delete Selected"
+                                mnemonicParsing="true"
+                                onAction="#deleteSelectedCustomer"
+                                prefWidth="150"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #c35656;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+
+                        <!-- Reloads the customer table. -->
+                        <Button text="_Refresh"
+                                mnemonicParsing="true"
+                                onAction="#loadCustomers"
+                                prefWidth="110"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #50a26b;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <!-- Returns the user to the main dashboard screen. This button does not use
+                             Alt+B because the header Back button already owns that shortcut. -->
+                        <Button text="Back to Dashboard"
+                                mnemonicParsing="false"
+                                onAction="#goBack"
+                                prefWidth="180"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #6f8190;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

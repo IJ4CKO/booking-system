@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    Products screen.
+
+    This screen allows staff to add finished products, search product records,
+    refresh the product list and delete selected products.
+-->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.bookingapp.ui.ProductController"
+            fitToWidth="true"
+            fitToHeight="true"
+            pannable="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            style="-fx-background: #f8f4f6;
+                   -fx-background-color: #f8f4f6;
+                   -fx-control-inner-background: #f8f4f6;">
+
+    <content>
+        <!-- Main page layout. -->
+        <VBox spacing="24"
+              alignment="TOP_CENTER"
+              prefWidth="1600"
+              minHeight="1000"
+              style="-fx-background-color:
+                     linear-gradient(to bottom, #f8f4f6, #f3ece7);">
+
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+
+            <!-- Header card containing shortcut help, centred page title and navigation button. -->
+            <HBox alignment="CENTER"
+                  spacing="24"
+                  maxWidth="1450"
+                  prefWidth="1450"
+                  minHeight="130"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 18;
+                         -fx-border-radius: 18;
+                         -fx-border-color: #eadfe2;
+                         -fx-padding: 22 24 22 24;">
+
+                <!-- Left spacer used to balance the Keyboard Shortcuts and Back buttons on the right. -->
+                <Region prefWidth="430"
+                        minWidth="430"/>
+
+                <!-- Page title and short description. -->
+                <VBox alignment="CENTER"
+                      spacing="6"
+                      HBox.hgrow="ALWAYS">
+
+                    <Label text="Products"
+                           maxWidth="Infinity"
+                           alignment="CENTER"
+                           style="-fx-font-size: 30px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #2f2a2c;"/>
+
+                    <Label text="Add, search, refresh and delete product records."
+                           wrapText="true"
+                           maxWidth="Infinity"
+                           alignment="CENTER"
+                           style="-fx-font-size: 16px;
+                                  -fx-text-fill: #1f1f1f;"/>
+                </VBox>
+
+                <!-- Right-side button area balances the spacer on the left. -->
+                <HBox alignment="CENTER_RIGHT"
+                      spacing="12"
+                      prefWidth="430"
+                      minWidth="430">
+
+                    <!-- Opens keyboard shortcut guidance for users who cannot easily use a mouse. -->
+                    <Button text="_Keyboard Shortcuts (Alt+K)"
+                            mnemonicParsing="true"
+                            onAction="#showKeyboardShortcuts"
+                            prefWidth="220"
+                            prefHeight="46"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #eee7e3;
+                                   -fx-text-fill: #1f1f1f;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+
+                    <!-- Returns the user to the main dashboard screen. -->
+                    <Button text="_Back to Dashboard"
+                            mnemonicParsing="true"
+                            onAction="#goBack"
+                            prefWidth="190"
+                            prefHeight="46"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #6f8190;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+                </HBox>
+            </HBox>
+
+            <!-- Main content area containing the add form and product table. -->
+            <HBox spacing="24"
+                  alignment="TOP_CENTER"
+                  maxWidth="1450"
+                  prefWidth="1450">
+
+                <!-- Add product form card. -->
+                <VBox spacing="14"
+                      prefWidth="360"
+                      minWidth="360"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-padding: 22;
+                             -fx-border-color: #eadfe2;
+                             -fx-border-radius: 18;">
+
+                    <Label text="Add Product"
+                           style="-fx-font-size: 22px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #b88fa1;"/>
+
+                    <!-- Product name field. -->
+                    <TextField fx:id="nameField"
+                               promptText="Product name"
+                               prefHeight="42"
+                               focusTraversable="true"
+                               style="-fx-prompt-text-fill: #1f1f1f;
+                                      -fx-text-fill: #1f1f1f;
+                                      -fx-font-size: 14px;"/>
+
+                    <!-- Product description field. -->
+                    <TextArea fx:id="descriptionField"
+                              promptText="Description"
+                              prefHeight="140"
+                              wrapText="true"
+                              focusTraversable="true"
+                              style="-fx-prompt-text-fill: #1f1f1f;
+                                     -fx-text-fill: #1f1f1f;
+                                     -fx-font-size: 14px;"/>
+
+                    <!-- Adds a new product using the entered name and description. -->
+                    <Button text="_Add Product"
+                            mnemonicParsing="true"
+                            onAction="#addProduct"
+                            prefHeight="42"
+                            focusTraversable="true"
+                            style="-fx-font-size: 14px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-color: #b88fa1;
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 10;
+                                   -fx-cursor: hand;"/>
+                </VBox>
+
+                <!-- Product list card. -->
+                <VBox spacing="16"
+                      HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-padding: 22;
+                             -fx-border-color: #eadfe2;
+                             -fx-border-radius: 18;">
+
+                    <Label text="Product List"
+                           style="-fx-font-size: 24px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #50a26b;"/>
+
+                    <!-- Search area used to filter the product table. -->
+                    <HBox alignment="CENTER_LEFT"
+                          spacing="12"
+                          style="-fx-background-color: #f8f4f6;
+                                 -fx-background-radius: 12;
+                                 -fx-border-color: #eadfe2;
+                                 -fx-border-radius: 12;
+                                 -fx-padding: 14;">
+
+                        <Label text="Search:"
+                               style="-fx-font-size: 14px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #1f1f1f;"/>
+
+                        <!-- Search box controlled by ProductController. -->
+                        <TextField fx:id="searchField"
+                                   promptText="Search by product name, description or ID..."
+                                   prefWidth="520"
+                                   focusTraversable="true"
+                                   style="-fx-prompt-text-fill: #1f1f1f;
+                                          -fx-text-fill: #1f1f1f;
+                                          -fx-font-size: 14px;"/>
+                    </HBox>
+
+                    <!-- Table showing saved product records. -->
+                    <TableView fx:id="productTable"
+                               prefHeight="520"
+                               VBox.vgrow="ALWAYS"
+                               focusTraversable="true"
+                               style="-fx-background-radius: 12;
+                                      -fx-border-radius: 12;
+                                      -fx-border-color: #eadfe2;">
+
+                        <columns>
+                            <!-- Internal product ID. -->
+                            <TableColumn fx:id="idColumn"
+                                         text="ID"
+                                         prefWidth="70"/>
+
+                            <!-- Product name. -->
+                            <TableColumn fx:id="nameColumn"
+                                         text="Name"
+                                         prefWidth="220"/>
+
+                            <!-- Product description. -->
+                            <TableColumn fx:id="descriptionColumn"
+                                         text="Description"
+                                         prefWidth="520"/>
+                        </columns>
+                    </TableView>
+
+                    <!-- Product table action buttons. -->
+                    <HBox spacing="12">
+
+                        <!-- Deletes the selected product record. -->
+                        <Button text="_Delete Selected"
+                                mnemonicParsing="true"
+                                onAction="#deleteSelectedProduct"
+                                prefWidth="150"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #c35656;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+
+                        <!-- Reloads the product table. -->
+                        <Button text="_Refresh"
+                                mnemonicParsing="true"
+                                onAction="#loadProducts"
+                                prefWidth="110"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #50a26b;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <!-- Returns the user to the main dashboard screen. This button does not use
+                             Alt+B because the header Back button already owns that shortcut. -->
+                        <Button text="Back to Dashboard"
+                                mnemonicParsing="false"
+                                onAction="#goBack"
+                                prefWidth="180"
+                                prefHeight="40"
+                                focusTraversable="true"
+                                style="-fx-font-size: 14px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-color: #6f8190;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 10;
+                                       -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

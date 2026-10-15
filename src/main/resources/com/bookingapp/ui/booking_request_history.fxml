@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    Booking request history screen.
+
+    This screen allows staff to review website booking requests that have already
+    been confirmed or rejected. It is intended as a read-only history screen, so
+    there are no edit, delete, accept or reject buttons on this page.
+-->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.bookingapp.ui.BookingRequestHistoryController"
+            fitToWidth="true"
+            pannable="true"
+            hbarPolicy="AS_NEEDED"
+            vbarPolicy="AS_NEEDED"
+            style="-fx-background: #f8f4f6;
+                   -fx-background-color: #f8f4f6;
+                   -fx-control-inner-background: #f8f4f6;">
+
+       <content>
+              <!-- Main page layout. -->
+              <VBox alignment="TOP_CENTER"
+                    spacing="20"
+                    prefWidth="1850"
+                    minHeight="1150"
+                    style="-fx-background-color:
+                           linear-gradient(to bottom, #f8f4f6, #f3ece7);">
+
+                     <padding>
+                            <Insets top="24" right="24" bottom="24" left="24"/>
+                     </padding>
+
+                     <!-- Header card containing the screen title, shortcut help and navigation buttons. -->
+                     <HBox alignment="CENTER_LEFT"
+                           spacing="12"
+                           maxWidth="1800"
+                           prefWidth="1800"
+                           style="-fx-background-color: white;
+                                  -fx-background-radius: 18;
+                                  -fx-border-radius: 18;
+                                  -fx-border-color: #eadfe2;
+                                  -fx-padding: 18 22 18 22;">
+
+                            <!-- Screen title and short description. -->
+                            <VBox spacing="4">
+                                   <Label text="Booking Request History"
+                                          style="-fx-font-size: 28px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #2f2a2c;"/>
+
+                                   <Label text="Review confirmed and rejected website booking requests"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #2f2a2c;"/>
+                            </VBox>
+
+                            <Region HBox.hgrow="ALWAYS"/>
+
+                            <!-- Opens keyboard shortcut guidance for users who cannot easily use a mouse. -->
+                            <Button text="_Keyboard Shortcuts"
+                                    mnemonicParsing="true"
+                                    onAction="#showKeyboardShortcuts"
+                                    focusTraversable="true"
+                                    prefWidth="190"
+                                    style="-fx-background-color: #eee7e3;
+                                           -fx-text-fill: #1f1f1f;
+                                           -fx-background-radius: 10;
+                                           -fx-padding: 10 18 10 18;
+                                           -fx-font-weight: bold;
+                                           -fx-cursor: hand;"/>
+
+                            <!-- Reloads the confirmed and rejected request history tables. -->
+                            <Button text="_Refresh"
+                                    mnemonicParsing="true"
+                                    onAction="#loadHistory"
+                                    focusTraversable="true"
+                                    prefWidth="120"
+                                    style="-fx-background-color: #b88fa1;
+                                           -fx-text-fill: white;
+                                           -fx-background-radius: 10;
+                                           -fx-padding: 10 18 10 18;
+                                           -fx-font-weight: bold;
+                                           -fx-cursor: hand;"/>
+
+                            <!-- Returns the user to the main dashboard screen. -->
+                            <Button text="_Back to Dashboard"
+                                    mnemonicParsing="true"
+                                    onAction="#goBack"
+                                    focusTraversable="true"
+                                    prefWidth="180"
+                                    style="-fx-background-color: #6f8190;
+                                           -fx-text-fill: white;
+                                           -fx-background-radius: 10;
+                                           -fx-padding: 10 18 10 18;
+                                           -fx-font-weight: bold;
+                                           -fx-cursor: hand;"/>
+                     </HBox>
+
+                     <!-- Search section used to filter both history tables. -->
+                     <VBox spacing="14"
+                           maxWidth="1800"
+                           prefWidth="1800"
+                           style="-fx-background-color: white;
+                                  -fx-background-radius: 18;
+                                  -fx-border-radius: 18;
+                                  -fx-border-color: #eadfe2;
+                                  -fx-padding: 22;">
+
+                            <HBox alignment="CENTER_LEFT"
+                                  spacing="12"
+                                  style="-fx-background-color: #f8f4f6;
+                                         -fx-background-radius: 12;
+                                         -fx-border-radius: 12;
+                                         -fx-border-color: #eadfe2;
+                                         -fx-padding: 14;">
+
+                                   <Label text="Search history:"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #1f1f1f;"/>
+
+                                   <!-- Search box controlled by BookingRequestHistoryController. -->
+                                   <TextField fx:id="searchField"
+                                              promptText="Search by customer, product, date, reference, payment reference or rejection reason..."
+                                              prefWidth="700"
+                                              focusTraversable="true"
+                                              style="-fx-prompt-text-fill: #1f1f1f;
+                                                     -fx-text-fill: #1f1f1f;
+                                                     -fx-font-size: 14px;"/>
+
+                                   <Label text="Search filters both confirmed and rejected requests."
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #2f2a2c;"/>
+                            </HBox>
+                     </VBox>
+
+                     <!-- Confirmed website booking request history section. -->
+                     <VBox spacing="14"
+                           maxWidth="1800"
+                           prefWidth="1800"
+                           style="-fx-background-color: white;
+                                  -fx-background-radius: 18;
+                                  -fx-border-radius: 18;
+                                  -fx-border-color: #eadfe2;
+                                  -fx-padding: 22;">
+
+                            <!-- Confirmed request section heading and count label. -->
+                            <HBox alignment="CENTER_LEFT">
+                                   <Label text="Confirmed Requests"
+                                          style="-fx-font-size: 22px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #4d8f68;"/>
+
+                                   <Region HBox.hgrow="ALWAYS"/>
+
+                                   <Label fx:id="confirmedCountLabel"
+                                          text="0 confirmed requests"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #2f2a2c;"/>
+                            </HBox>
+
+                            <!-- Table showing confirmed booking requests. -->
+                            <TableView fx:id="confirmedRequestTable"
+                                       prefHeight="390"
+                                       prefWidth="1750"
+                                       focusTraversable="true">
+
+                                   <placeholder>
+                                          <Label text="There are no confirmed booking requests."/>
+                                   </placeholder>
+
+                                   <columns>
+                                          <!-- Website request reference. -->
+                                          <TableColumn fx:id="confirmedRequestReferenceColumn"
+                                                       text="Request Reference"
+                                                       prefWidth="130"/>
+
+                                          <!-- Confirmed booking reference created from the request. -->
+                                          <TableColumn fx:id="confirmedBookingReferenceColumn"
+                                                       text="Booking Reference"
+                                                       prefWidth="135"/>
+
+                                          <!-- Customer name. -->
+                                          <TableColumn fx:id="confirmedCustomerColumn"
+                                                       text="Customer"
+                                                       prefWidth="150"/>
+
+                                          <!-- Customer email address. -->
+                                          <TableColumn fx:id="confirmedEmailColumn"
+                                                       text="Email"
+                                                       prefWidth="190"/>
+
+                                          <!-- Services requested through the website form. -->
+                                          <TableColumn fx:id="confirmedServicesColumn"
+                                                       text="Requested Services"
+                                                       prefWidth="230"/>
+
+                                          <!-- Products and quantities requested by the customer. -->
+                                          <TableColumn fx:id="confirmedProductQuantitiesColumn"
+                                                       text="Product Quantities"
+                                                       prefWidth="240"/>
+
+                                          <!-- Collection or delivery choice. -->
+                                          <TableColumn fx:id="confirmedFulfilmentColumn"
+                                                       text="Fulfilment"
+                                                       prefWidth="100"/>
+
+                                          <!-- Event date requested by the customer. -->
+                                          <TableColumn fx:id="confirmedEventDateColumn"
+                                                       text="Event Date"
+                                                       prefWidth="100"/>
+
+                                          <!-- Event time requested by the customer. -->
+                                          <TableColumn fx:id="confirmedEventTimeColumn"
+                                                       text="Time"
+                                                       prefWidth="75"/>
+
+                                          <!-- Total order value recorded for the request. -->
+                                          <TableColumn fx:id="confirmedOrderTotalColumn"
+                                                       text="Order Total"
+                                                       prefWidth="105"/>
+
+                                          <!-- Deposit amount required for the request. -->
+                                          <TableColumn fx:id="confirmedDepositColumn"
+                                                       text="Deposit"
+                                                       prefWidth="90"/>
+
+                                          <!-- Date the deposit was recorded as paid. -->
+                                          <TableColumn fx:id="confirmedPaidDateColumn"
+                                                       text="Deposit Paid"
+                                                       prefWidth="145"/>
+
+                                          <!-- Payment reference entered when the deposit was recorded. -->
+                                          <TableColumn fx:id="confirmedPaymentReferenceColumn"
+                                                       text="Payment Reference"
+                                                       prefWidth="155"/>
+                                   </columns>
+                            </TableView>
+                     </VBox>
+
+                     <!-- Rejected website booking request history section. -->
+                     <VBox spacing="14"
+                           maxWidth="1800"
+                           prefWidth="1800"
+                           style="-fx-background-color: white;
+                                  -fx-background-radius: 18;
+                                  -fx-border-radius: 18;
+                                  -fx-border-color: #eadfe2;
+                                  -fx-padding: 22;">
+
+                            <!-- Rejected request section heading and count label. -->
+                            <HBox alignment="CENTER_LEFT">
+                                   <Label text="Rejected Requests"
+                                          style="-fx-font-size: 22px;
+                                                 -fx-font-weight: bold;
+                                                 -fx-text-fill: #c35656;"/>
+
+                                   <Region HBox.hgrow="ALWAYS"/>
+
+                                   <Label fx:id="rejectedCountLabel"
+                                          text="0 rejected requests"
+                                          style="-fx-font-size: 14px;
+                                                 -fx-text-fill: #2f2a2c;"/>
+                            </HBox>
+
+                            <!-- Table showing rejected booking requests. -->
+                            <TableView fx:id="rejectedRequestTable"
+                                       prefHeight="340"
+                                       prefWidth="1750"
+                                       focusTraversable="true">
+
+                                   <placeholder>
+                                          <Label text="There are no rejected booking requests."/>
+                                   </placeholder>
+
+                                   <columns>
+                                          <!-- Website request reference. -->
+                                          <TableColumn fx:id="rejectedRequestReferenceColumn"
+                                                       text="Request Reference"
+                                                       prefWidth="135"/>
+
+                                          <!-- Customer name. -->
+                                          <TableColumn fx:id="rejectedCustomerColumn"
+                                                       text="Customer"
+                                                       prefWidth="155"/>
+
+                                          <!-- Customer email address. -->
+                                          <TableColumn fx:id="rejectedEmailColumn"
+                                                       text="Email"
+                                                       prefWidth="200"/>
+
+                                          <!-- Services requested through the website form. -->
+                                          <TableColumn fx:id="rejectedServicesColumn"
+                                                       text="Requested Services"
+                                                       prefWidth="250"/>
+
+                                          <!-- Products and quantities requested by the customer. -->
+                                          <TableColumn fx:id="rejectedProductQuantitiesColumn"
+                                                       text="Product Quantities"
+                                                       prefWidth="240"/>
+
+                                          <!-- Event date requested by the customer. -->
+                                          <TableColumn fx:id="rejectedEventDateColumn"
+                                                       text="Event Date"
+                                                       prefWidth="105"/>
+
+                                          <!-- Event time requested by the customer. -->
+                                          <TableColumn fx:id="rejectedEventTimeColumn"
+                                                       text="Time"
+                                                       prefWidth="75"/>
+
+                                          <!-- Total order value recorded for the request. -->
+                                          <TableColumn fx:id="rejectedOrderTotalColumn"
+                                                       text="Order Total"
+                                                       prefWidth="105"/>
+
+                                          <!-- Date and time the website request was submitted. -->
+                                          <TableColumn fx:id="rejectedSubmittedColumn"
+                                                       text="Submitted"
+                                                       prefWidth="145"/>
+
+                                          <!-- Reason entered when the booking request was rejected. -->
+                                          <TableColumn fx:id="rejectedReasonColumn"
+                                                       text="Rejection Reason"
+                                                       prefWidth="400"/>
+                                   </columns>
+                            </TableView>
+                     </VBox>
+              </VBox>
+       </content>
+</ScrollPane>
